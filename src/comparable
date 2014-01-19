@@ -1,0 +1,105 @@
+# -*- shell-script -*-
+
+Tparam=""
+Targ=""
+function T-array
+{
+    elems=""
+    for elem in "$@"; do
+	elems="${elems:+${elems}, }${elem}"
+    done
+    if [ $T = T ]; then
+	echo "((${T}[])(new Object[] { ${elems} }))"
+    else
+	echo "(new ${T}[] { ${elems} })"
+    fi
+}
+if [ $T = boolean ]; then
+    function greater
+    {   echo "($1) & !($2)"
+    }
+    function greater=
+    {   echo "($1) | !($2)"
+    }
+    function =
+    {   echo "($1) == ($2)"
+    }
+    function not=
+    {   echo "($1) ^ ($2)"
+    }
+    function less=
+    {   echo "!($1) | ($2)"
+    }
+    function less
+    {   echo "!($1) & ($2)"
+    }
+elif [ $T = T ] || [ $T = T+ ]; then
+    if [ $T = T ]; then
+	Tparam="<T> "
+	Targ=", Comparator<T> comparator"
+	function greater
+	{   echo "comparator.compare($1, $2) > 0"
+	}
+	function greater=
+	{   echo "comparator.compare($1, $2) >= 0"
+	}
+	function =
+	{   echo "comparator.compare($1, $2) == 0"
+	}
+	function not=
+	{   echo "comparator.compare($1, $2) != 0"
+	}
+	function less=
+	{   echo "comparator.compare($1, $2) <= 0"
+	}
+	function less
+	{   echo "comparator.compare($1, $2) < 0"
+	}
+    else
+	Tparam="<T extends Comparable<? super T>> "
+	Targ=""
+	function greater
+	{   echo "($1).compareTo($2) > 0"
+	}
+	function greater=
+	{   echo "($1).compareTo($2) >= 0"
+	}
+	function =
+	{   echo "($1).compareTo($2) == 0"
+	}
+	function not=
+	{   echo "($1).compareTo($2) != 0"
+	}
+	function less=
+	{   echo "($1).compareTo($2) <= 0"
+	}
+	function less
+	{   echo "($1).compareTo($2) < 0"
+	}
+	T=T
+    fi
+else
+    function greater
+    {   echo "($1) > ($2)"
+    }
+    function greater=
+    {   echo "($1) >= ($2)"
+    }
+    function =
+    {   echo "($1) == ($2)"
+    }
+    function not=
+    {   echo "($1) != ($2)"
+    }
+    function less=
+    {   echo "($1) <= ($2)"
+    }
+    function less
+    {   echo "($1) < ($2)"
+    }
+fi
+function fun
+{
+    echo "${Tparam}${1} ${2}(${3}${Targ})"
+}
+
