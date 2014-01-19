@@ -16,6 +16,8 @@
  */
 package algorithms.arrays;
 
+import java.util.*;
+
 
 /**
  * Class for finding the minimum and maximum values in one iteration
