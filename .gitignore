@@ -1,0 +1,13 @@
+_/
+bin/
+obj/
+\#*\#
+.*
+!.git*
+*~
+*.swo
+*.swp
+*.bak
+*.class
+*.jar
+
