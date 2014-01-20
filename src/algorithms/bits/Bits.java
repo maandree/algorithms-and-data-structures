@@ -236,11 +236,10 @@ public class Bits
 
 	value -= (value >> 1) & £{L1};
 	value = (£{T})((value & £{L2}) + ((value >> 2) & £{L2}));
-	value = (value + (value >> 4)) & £{L3};
-	value = (value * £{L4}) >> (($S - 1) * 8);
+	value = (£{T})((value + (value >> 4)) & £{L3});
+	value = (£{T})((value * £{L4}) >> ((£{S} - 1) * 8));
 	return value; /* Only applicable upto 128 bits */
     }
-    
 £>done
 }
 
