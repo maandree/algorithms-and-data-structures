@@ -48,6 +48,19 @@ public class Bits
     {
 	return (£{T})((value & ~mask) | (-flag & mask));
     }
+    
+    /**
+     * Merge bits from two values
+     * 
+     * @param   zero  Integer whose bits should be kept where the mask has zeroes
+     * @param   one   Integer whose bits should be kept where the mask has onces
+     * @param   mask  The merge mask
+     * @return        {@code (zero & ~mask) | (one & mask)}
+     */
+    public static £{T} merge(£{T} zero, £{T} one, £{T} mask)
+    {
+	return (£{T})(zero ^ ((£{T})(zero ^ one) & mask));
+    }
 £>done
 }
 
