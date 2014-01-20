@@ -23,7 +23,7 @@ import java.util.Random;
  * Bias free array shuffling class using Sattolo Cycles.<br/>
  * The is probably the best possible shuffling algorithm.
  */
-public class KnuthShuffle
+public class SattoloShuffle
 {
 £>for T in boolean char byte short int long float double Object; do
     /**
