@@ -314,6 +314,24 @@ public class Bits
 	value ^= value >> 8;
 	return PARITY_TABLE_256[(int)value];
     }
+    
+    /**
+     * Compute the parity of all bits in an integer, optimised parallel version
+     * 
+     * @param   value  The interger
+     * @return         The parity
+     */
+    public static int parity_optimised_parallel(£{T} value)
+    {
+£>(( $S > 4 )) &&
+	value ^= value >> 32;
+£>(( $S > 2 )) &&
+	value ^= value >> 16;
+£>(( $S > 1 )) &&
+	value ^= value >> 8;
+	value ^= value >> 4;
+	return (0x6996 >> (value & 15)) & 1;
+    }
 £>done
 }
 
