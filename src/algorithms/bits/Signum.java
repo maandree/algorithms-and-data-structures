@@ -92,7 +92,7 @@ public class Signum
      */
     public static boolean haveOpposite(£{T} a, £{T} b)
     {
-	return (x ^ y) < 0;
+	return (a ^ b) < 0;
     }
 £>done
 }

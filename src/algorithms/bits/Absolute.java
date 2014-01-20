@@ -33,10 +33,9 @@ public class Absolute
      */
     public static £{T} abs(£{T} value)
     {
-	£{T} mask;;
-	return (value ^ (mask = value >> £{S})) - mask;
-	/* Or alternatively:
-	 *     (v + (mask = value >> £{S})) ^ mask
+	£{T} mask;
+	return (£{T})((value ^ (mask = (£{T})(value >> £{S}))) - mask);
+	/* Or alternatively make the ^ into an +, and the - into a ^.
 	 */
     }
 £>done
