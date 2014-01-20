@@ -18,7 +18,7 @@ package algorithms.bits;
 
 
 /**
- * Compute the sign of an integer
+ * Signum operations on integers
  */
 public class Signum
 {
@@ -92,8 +92,33 @@ public class Signum
      */
     public static boolean haveOpposite(£{T} a, £{T} b)
     {
-	return (a ^ b) < 0;
+	return (£{T})(a ^ b) < 0;
     }
+    
+    /**
+     * Negates a value of a flag is set to 1
+     * 
+     * @param   value  The value
+     * @param   flag   The flag, must be either 1 or 0
+     * @return         {@code flag == 1 ? value : -value}
+     */
+    public static £{T} negateOn1(£{T} value, £{T} flag)
+    {
+	return (£{T})((£{T})(flag ^ (flag - 1)) * value);
+    }
+    
+    /**
+     * Negates a value of a flag is set to 1
+     * 
+     * @param   value  The value
+     * @param   flag   The flag, must be either 1 or 0
+     * @return         {@code flag == 0 ? value : -value}
+     */
+    public static £{T} negateOn0(£{T} value, £{T} flag)
+    {
+	return (£{T})((£{T})(value ^ -flag) + flag);
+    }
+    
 £>done
 }
 
