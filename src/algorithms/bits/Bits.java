@@ -138,6 +138,88 @@ public class Bits
         return (byte)((byte)(£(_ 0) + £(_ 8)) + (byte)(£(_ 16) + £(_ 24)));
 	/* In C you can split the value by getting the address of the value and cast the pointer to char* */
     }
+    
+    /**
+     * Calculate the number of set bits in an integer, 64-bits instructions version
+     * 
+     * @param   value  The integer
+     * @return         The number of set bits
+     */
+    public static long ones_64bits(£{T} value)
+    {
+	long v = value, rc;
+£>(( $S > 1 )) &&
+	if ((v & (1L << 14L) - 1L) == v)
+	{
+	    rc = (v * 0x200040008001L & 0x111111111111111L) % 0xF;
+	}
+£>if (( $S >= 2 )); then
+	else
+£>(( $S > 3 )) &&
+	    if ((v & (1L << 24L) - 1L) == v)
+	{
+	    rc = ((v & 0xFFF) * 0x1001001001001L & 0x84210842108421L) % 0x1F;
+	    rc += (((v & 0XFFF000) >> 12) * 0x1001001001001L & 0x84210842108421L) % 0x1F;
+	}
+£>if (( $S > 3 )); then
+	else
+£>(( $S > 4 )) &&
+	    if ((v & (1L << 32L) - 1L) == v)
+	{
+	    rc = ((v & 0xFFF) * 0x1001001001001L & 0x84210842108421L) % 0x1F;
+	    rc += (((v & 0xFFF000) >> 12) * 0x1001001001001L & 0x84210842108421L) % 0x1F;
+	    rc += ((v >> 24) * 0x1001001001001L & 0x84210842108421L) % 0x1F;
+	}
+£>if (( $S > 4 )); then
+	else
+	{
+	    rc = ones_64bits(v & (1L << 32L) - 1L);
+	    rc += ones_64bits(v >>> 32);
+	}
+£>fi;fi;fi
+	return rc;
+    }
+    
+    /**
+     * Calculate the number of set bits in an integer, naïve parallel version
+     * 
+     * @param   value  The integer
+     * @return         The number of set bits
+     */
+    public static £{T} ones_parallel(£{T} value)
+    {
+	£{T} rc = value;
+	rc = (£{T})(((rc >>  1) & (£{T})0xAAAAAAAAAAAAAAAAL) + (rc & (£{T})0xAAAAAAAAAAAAAAAAL));
+	rc = (£{T})(((rc >>  2) & (£{T})0xCCCCCCCCCCCCCCCCL) + (rc & (£{T})0xCCCCCCCCCCCCCCCCL));
+	rc = (£{T})(((rc >>  4) & (£{T})0xF0F0F0F0F0F0F0F0L) + (rc & (£{T})0xF0F0F0F0F0F0F0F0L));
+£>(( $S > 1 )) &&
+	rc = (£{T})(((rc >>  8) & (£{T})0xFF00FF00FF00FF00L) + (rc & (£{T})0xFF00FF00FF00FF00L));
+£>(( $S > 2 )) &&
+	rc = (£{T})(((rc >> 16) & (£{T})0xFFFF0000FFFF0000L) + (rc & (£{T})0xFFFF0000FFFF0000L));
+£>(( $S > 4 )) &&
+	rc = (£{T})(((rc >> 32) & (£{T})0xFFFFFFFF00000000L) + (rc & (£{T})0xFFFFFFFF00000000L));
+	return rc;
+    }
+    
+    /**
+     * Calculate the number of set bits in an integer, optimised parallel version
+     * 
+     * @param   value  The integer
+     * @return         The number of set bits
+     */
+    public static £{T} ones_optimised_parallel(£{T} value)
+    {
+	£{T} rc = (£{T})(value - ((value >> 1) & (£{T})0x5555555555555555L));
+	rc = (£{T})(((rc >>  2) & (£{T})0x3333333333333333L) + (rc & (£{T})0x3333333333333333L));
+	rc = (£{T})(((rc >>  4) + rc) & (£{T})0x0F0F0F0F0F0F0F0FL);
+£>(( $S > 1 )) &&
+	rc = (£{T})(((rc >>  8) + rc) & (£{T})0x00FF00FF00FF00FFL);
+£>(( $S > 2 )) &&
+	rc = (£{T})(((rc >> 16) + rc) & (£{T})0x0000FFFF0000FFFFL);
+£>(( $S > 4 )) &&
+	rc = (£{T})(((rc >> 32) + rc) & (£{T})0x00000000FFFFFFFFL);
+	return rc;
+    }
 £>done
 }
 
