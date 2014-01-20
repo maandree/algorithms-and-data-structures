@@ -295,7 +295,7 @@ public class Bits
 	value ^= value >> 3;
 	value ^= value >> 2;
 	value ^= value >> 1;
-	return value & 1;
+	return (£{T})(value & 1);
     }
     
     /**
@@ -304,7 +304,7 @@ public class Bits
      * @param   value  The interger
      * @return         The parity
      */
-    public static char parity_table(£{T} value)
+    public static byte parity_table(£{T} value)
     {
 £>(( $S > 4 )) &&
 	value ^= value >> 32;
@@ -312,7 +312,7 @@ public class Bits
 	value ^= value >> 16;
 £>(( $S > 1 )) &&
 	value ^= value >> 8;
-	return PARITY_TABLE_256[rc];
+	return PARITY_TABLE_256[(int)value];
     }
 £>done
 }
