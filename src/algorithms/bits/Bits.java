@@ -343,6 +343,20 @@ public class Bits
 	value ^= value >> 4;
 	return (0x6996 >> (value & 15)) & 1;
     }
+    
+    /**
+     * Compute the parity of all bits in an integer, multiplication version
+     * 
+     * @param   value  The interger
+     * @return         The parity
+     */
+    public static £{T} parity_multiplication(£{T} value)
+    {
+	value ^= value >> 1;
+	value ^= value >> 2;
+	value = (£{T})((value & (£{T})0x1111111111111111L) * (£{T})0x1111111111111111L);
+	return (£{T})((value >> (£{S} - 4)) & 1);
+    }
 £>done
 }
 
