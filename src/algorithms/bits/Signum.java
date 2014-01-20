@@ -16,8 +16,6 @@
  */
 package algorithms.bits;
 
-import java.util.*;
-
 
 /**
  * Compute the sign of an integer
