@@ -64,6 +64,17 @@ public class Bits
     private static byte[] PARITY_TABLE_256 = { £(parity-table 4 0) };
     
     
+    /**
+     * Compute the parity of all bits in an integer, 64-bit multiply–modulus version
+     * 
+     * @param   value  The interger
+     * @return         The parity
+     */
+    public static int parity_64bit(byte value)
+    {
+	return (int)(((value * 0x0101010101010101L) & 0x8040201008040201L) % 0x1FF) & 1;
+    }
+    
 £<for T_S in char_2 byte_1 short_2 int_4 long_8; do
   T=${T_S%_*}
 £>S=${T_S#*_}
