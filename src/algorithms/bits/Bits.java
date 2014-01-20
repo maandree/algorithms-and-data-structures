@@ -22,27 +22,46 @@ package algorithms.bits;
  */
 public class Bits
 {
-£<function table
+£<function ones-table
   {
       if [ $1 = 0 ]; then
           echo -n "${2}, "
       else
 	  level=$(( $1 - 1 ))
-          table $level $(( $2 + 0 ))
-          table $level $(( $2 + 1 ))
-          table $level $(( $2 + 1 ))
-          table $level $(( $2 + 2 ))
+          ones-table $level $(( $2 + 0 ))
+          ones-table $level $(( $2 + 1 ))
+          ones-table $level $(( $2 + 1 ))
+          ones-table $level $(( $2 + 2 ))
       fi
 £>}
 
     /**
      * Lookup table for the number of set bits in a byte
      */
-    private static byte[] ONES_TABLE_256 = { £(table 4 0) };
+    private static byte[] ONES_TABLE_256 = { £(ones-table 4 0) };
     /* ONES_TABLE_256[0] = 0;
      * for (int i = 0; i < 256; i++)
      *     ONES_TABLE_256[i] = (i & 1) + ONES_TABLE_256[i / 2];
      */
+
+
+£<function parity-table
+  {
+      if [ $1 = 0 ]; then
+          echo -n "${2}, "
+      else
+	  level=$(( $1 - 1 ))
+          parity-table $level $(( $2 ^ 0 ))
+          parity-table $level $(( $2 ^ 1 ))
+          parity-table $level $(( $2 ^ 1 ))
+          parity-table $level $(( $2 ^ 0 ))
+      fi
+£>}
+
+    /**
+     * Lookup table for the parity of the bits in a byte
+     */
+    private static byte[] PARITY_TABLE_256 = { £(parity-table 4 0) };
     
     
 £<for T_S in char_2 byte_1 short_2 int_4 long_8; do
@@ -242,7 +261,7 @@ public class Bits
     }
     
     /**
-     * Compute the parity of all bits in an integer
+     * Compute the parity of all bits in an integer, naïve version
      * 
      * @param   value  The interger
      * @return         The parity
@@ -256,6 +275,44 @@ public class Bits
 	    value &= value - 1;
 	}
 	return rc;
+    }
+    
+    /**
+     * Compute the parity of all bits in an integer, parallel version
+     * 
+     * @param   value  The interger
+     * @return         The parity
+     */
+    public static £{T} parity_parallel(£{T} value)
+    {
+£>(( $S > 4 )) &&
+	value ^= value >> 32;
+£>(( $S > 2 )) &&
+	value ^= value >> 16;
+£>(( $S > 1 )) &&
+	value ^= value >> 8;
+	value ^= value >> 4;
+	value ^= value >> 3;
+	value ^= value >> 2;
+	value ^= value >> 1;
+	return value & 1;
+    }
+    
+    /**
+     * Compute the parity of all bits in an integer, partial lookup table version
+     * 
+     * @param   value  The interger
+     * @return         The parity
+     */
+    public static char parity_table(£{T} value)
+    {
+£>(( $S > 4 )) &&
+	value ^= value >> 32;
+£>(( $S > 2 )) &&
+	value ^= value >> 16;
+£>(( $S > 1 )) &&
+	value ^= value >> 8;
+	return PARITY_TABLE_256[rc];
     }
 £>done
 }
