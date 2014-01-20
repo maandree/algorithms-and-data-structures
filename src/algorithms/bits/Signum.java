@@ -84,6 +84,18 @@ public class Signum
 	 *     1 ^ ((unsigned £{T})value >> (sizeof(£{T}) * CHAR_BITS - 1))
 	 */
     }
+    
+    /**
+     * Detect if two integers have opposite signs
+     * 
+     * @param   a  One of the integers
+     * @param   b  The other of the integers
+     * @return     {@code true} iff either {@code a} or {@code b} is negative and the other is positive
+     */
+    public static boolean haveOpposite(£{T} a, £{T} b)
+    {
+	return (x ^ y) < 0;
+    }
 £>done
 }
 
