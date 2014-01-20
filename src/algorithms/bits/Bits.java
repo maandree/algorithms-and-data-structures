@@ -220,6 +220,27 @@ public class Bits
 	rc = (£{T})(((rc >> 32) + rc) & (£{T})0x00000000FFFFFFFFL);
 	return rc;
     }
+    
+    /**
+     * Calculate the number of set bits in an integer, parallel–64bits-like hybrid version, probably the best version
+     * 
+     * @param   value  The integer
+     * @return         The number of set bits
+     */
+    public static £{T} ones_hybrid(£{T} value)
+    {
+£>L1="($T)$(bc <<< "(256^$S - 1) / 3")L"
+£>L2="($T)$(bc <<< "(256^$S - 1) / 15 * 3")L"
+£>L3="($T)$(bc <<< "(256^$S - 1) / 255 * 15")L"
+£>L4="($T)$(bc <<< "(256^$S - 1) / 255")L"
+
+	value -= (value >> 1) & £{L1};
+	value = (£{T})((value & £{L2}) + ((value >> 2) & £{L2}));
+	value = (value + (value >> 4)) & £{L3};
+	value = (value * £{L4}) >> (($S - 1) * 8);
+	return value; /* Only applicable upto 128 bits */
+    }
+    
 £>done
 }
 
