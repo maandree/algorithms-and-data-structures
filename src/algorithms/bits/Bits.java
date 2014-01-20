@@ -134,9 +134,7 @@ public class Bits
      */
     public static £{T} ones_table(£{T} value)
     {
-£<function lookup
-  {   echo "ONES_TABLE_256[(int)((value >> $1) & 255)]"
-£>}
+£>function lookup { echo "ONES_TABLE_256[(int)((value >> $1) & 255)]" ; }
 	return (£{T})((£{T})(£(lookup 0) + £(lookup 8)) + (£{T})(£(lookup 16) + £(lookup 24)));
 	/* In C you can split the value by getting the address of the value and cast the pointer to char* */
     }
