@@ -132,10 +132,10 @@ public class Bits
      * @param   value  The integer
      * @return         The number of set bits
      */
-    public static £{T} ones_table(£{T} value)
+    public static byte ones_table(£{T} value)
     {
-£>function lookup { echo "ONES_TABLE_256[(int)((value >> $1) & 255)]" ; }
-	return (£{T})((£{T})(£(lookup 0) + £(lookup 8)) + (£{T})(£(lookup 16) + £(lookup 24)));
+£>function _ { echo "ONES_TABLE_256[(int)((value >> $1) & 255)]" ; }
+        return (byte)((byte)(£(_ 0) + £(_ 8)) + (byte)(£(_ 16) + £(_ 24)));
 	/* In C you can split the value by getting the address of the value and cast the pointer to char* */
     }
 £>done
