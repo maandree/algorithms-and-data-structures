@@ -22,7 +22,7 @@ package algorithms.bits;
  */
 public class Powers
 {
-£<for T in char byte short int long; do
+£>for T in char byte short int long; do
     /**
      * Compute whether an integer is a power of two,
      * note that zero is indeed not a power of two
