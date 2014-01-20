@@ -240,6 +240,23 @@ public class Bits
 	value = (£{T})((value * £{L4}) >> ((£{S} - 1) * 8));
 	return value; /* Only applicable upto 128 bits */
     }
+    
+    /**
+     * Compute the parity of all bits in an integer
+     * 
+     * @param   value  The interger
+     * @return         The parity
+     */
+    public static £{T} parity_naïve(£{T} value)
+    {
+	£{T} rc = 0;
+	while (value != 0)
+	{
+	    rc ^= 1;
+	    value &= value - 1;
+	}
+	return rc;
+    }
 £>done
 }
 
