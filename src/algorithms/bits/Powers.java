@@ -32,7 +32,7 @@ public class Powers
      */
     public static boolean isPowerOf2(£{T} value)
     {
-	return (value & (value - 1)) == 0;
+	return (value & (value - 1)) == 0; /* The left hand side clears the least significant bit set */
 	/* Or alternatively: (value & -value) == value */
     }
 £>done
