@@ -20,7 +20,7 @@ import java.util.Random;
 
 
 /**
- * Bias free array shuffling class using Sattolo Cycles.<br/>
+ * Bias free array shuffling class using Sattolo Cycles.<br>
  * The is probably the best possible shuffling algorithm.
  */
 public class SattoloShuffle
