@@ -97,7 +97,7 @@ public class HybridBinarySearch
          * Look for both the index of the fist occurence and of the last occurence.<br>
          * The returned value will be {@code (LAST << 32) | FIRST}.
          */
-        FIND_FIST_AND_LAST,
+        FIND_FIRST_AND_LAST,
         
     }
     
