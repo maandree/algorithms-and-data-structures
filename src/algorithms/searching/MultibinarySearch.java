@@ -101,6 +101,55 @@ public class MultibinarySearch
      */
     public static £(fun "long[][]" indexOf "${T}[] items, ${Tarray} array, SortOrder order, SearchMode mode")
     {
+	return indexOf(items, array, order, mode, 0, array.length - 1£{Targ_name});
+    }
+    
+    /**
+     * Find the indices of multiple items in a list, with time
+     * complexity 𝓞(log n + m) and memory complexity 𝓞(log m)
+     * 
+     * @param   items  Sorted list of unique items for which to search, the number
+     *                 of elements is named ‘m’ in the complexity analysis
+     * @param   array  Sorted list in which to search, the number of elements
+     *                 is named ‘n’ in the complexity analysis
+     * @param   order  The lists' element order
+     * @param   mode   The search mode
+     * @param   start  The index of the first position to search in the array
+     * @return         Two arrays of integer arrays, the 0:th being the indices
+     *                 of items, the 1:th being their positions. That is,
+     *                 two separate arrays, not and array of pairs. The expected
+     *                 position is returned inverted if it was not found, the
+     *                 position it whould have upon be inserted, otherwise the
+     *                 position is returned as an index if the mode does not
+     *                 specify anything else.
+     */
+    public static £(fun "long[][]" indexOf "${T}[] items, ${Tarray} array, SortOrder order, SearchMode mode, int start")
+    {
+	return indexOf(items, array, order, mode, start, array.length - 1£{Targ_name});
+    }
+    
+    /**
+     * Find the indices of multiple items in a list, with time
+     * complexity 𝓞(log n + m) and memory complexity 𝓞(log m)
+     * 
+     * @param   items  Sorted list of unique items for which to search, the number
+     *                 of elements is named ‘m’ in the complexity analysis
+     * @param   array  Sorted list in which to search, the number of elements
+     *                 is named ‘n’ in the complexity analysis
+     * @param   order  The lists' element order
+     * @param   mode   The search mode
+     * @param   start  The index of the first position to search in the array
+     * @param   end    The index after the last position to search in the array
+     * @return         Two arrays of integer arrays, the 0:th being the indices
+     *                 of items, the 1:th being their positions. That is,
+     *                 two separate arrays, not and array of pairs. The expected
+     *                 position is returned inverted if it was not found, the
+     *                 position it whould have upon be inserted, otherwise the
+     *                 position is returned as an index if the mode does not
+     *                 specify anything else.
+     */
+    public static £(fun "long[][]" indexOf "${T}[] items, ${Tarray} array, SortOrder order, SearchMode mode, int start, int end")
+    {
 	if (mode != SearchMode.FIND_ANY)
 	    throw new Error("Mode not implemented"); /* TODO */
 	if (order != SortOrder.ASCENDING)
@@ -122,7 +171,6 @@ public class MultibinarySearch
 	if ((m & 0x00000002) != 0)  { lb_m +=  1; }
 	
         int[][] minomax = new int[4][lb_m];
-	int n = array.length - 1;
 	m = items.length - 1;
 	
 	int rc_i = 0;
@@ -131,8 +179,8 @@ public class MultibinarySearch
 	
 	minomax[0][mm_i] = 0;
 	minomax[1][mm_i] = m;
-	minomax[2][mm_i] = 0;
-	minomax[3][mm_i++] = n;
+	minomax[2][mm_i] = start;
+	minomax[3][mm_i++] = end - 1;
 	
 	while (mm_i-- > 0)
 	{
