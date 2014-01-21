@@ -136,7 +136,7 @@ public class MultibinarySearch
      *                 of elements is named ‘m’ in the complexity analysis
      * @param   array  Sorted list in which to search, the number of elements
      *                 is named ‘n’ in the complexity analysis
-     * @param   order  The lists' element order
+     * @param   order  The lists' (both) element order
      * @param   mode   The search mode
      * @param   start  The index of the first position to search in the array
      * @param   end    The index after the last position to search in the array
@@ -152,8 +152,6 @@ public class MultibinarySearch
     {
 	if (mode != SearchMode.FIND_ANY)
 	    throw new Error("Mode not implemented"); /* TODO */
-	if (order != SortOrder.ASCENDING)
-	    throw new Error("Order not implemented"); /* TODO */
 	
 	BinarySearch.SearchMode mode_ =
 	          mode == SearchMode.FIND_ANY   ? BinarySearch.SearchMode.FIND_ANY
