@@ -150,9 +150,6 @@ public class MultibinarySearch
      */
     public static £(fun "long[][]" indexOf "${T}[] items, ${Tarray} array, SortOrder order, SearchMode mode, int start, int end")
     {
-	if (mode == SearchMode.FIND_FIRST_AND_LAST)
-	    throw new Error("Mode not implemented"); /* TODO */
-	
 	BinarySearch.SearchMode mode_ =
 	          mode == SearchMode.FIND_ANY   ? BinarySearch.SearchMode.FIND_ANY
 	        : mode == SearchMode.FIND_FIRST ? BinarySearch.SearchMode.FIND_FIRST
@@ -203,6 +200,8 @@ public class MultibinarySearch
 		rc[1][rc_i++] = amax = (int)(£{bin_search});
 		if (amax < 0)
 		    amax = ~amax;
+		else if (mode == SearchMode.FIND_FIRST_AND_LAST)
+		    amax >>= 32L;
 		
 		minomax[0][mm_i] = imax + 1;
 		minomax[1][mm_i] = lastimax;
