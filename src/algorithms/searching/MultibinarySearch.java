@@ -74,7 +74,7 @@ public class MultibinarySearch
          * Look for both the index of the fist occurence and of the last occurence.<br>
          * The returned value will be {@code (LAST << 32) | FIRST}.
          */
-        FIND_FIST_AND_LAST,
+        FIND_FIRST_AND_LAST,
         
     }
     
@@ -155,8 +155,14 @@ public class MultibinarySearch
 	if (order != SortOrder.ASCENDING)
 	    throw new Error("Order not implemented"); /* TODO */
 	
-	BinarySearch.SearchMode mode_ = BinarySearch.SearchMode.FIND_ANY;
-	BinarySearch.SortOrder order_ = BinarySearch.SortOrder.ASCENDING;
+	BinarySearch.SearchMode mode_ =
+	          mode == SearchMode.FIND_ANY   ? BinarySearch.SearchMode.FIND_ANY
+	        : mode == SearchMode.FIND_FIRST ? BinarySearch.SearchMode.FIND_FIRST
+	        : mode == SearchMode.FIND_LAST  ? BinarySearch.SearchMode.FIND_LAST
+	                                        : BinarySearch.SearchMode.FIND_FIRST_AND_LAST;
+	BinarySearch.SortOrder order_ = order == SortOrder.ASCENDING
+	        ? BinarySearch.SortOrder.ASCENDING
+	        : BinarySearch.SortOrder.DESCENDING;
 	
 	int m = items.length, lb_m = 1;
 	long[][] rc = new long[2][m];
@@ -175,39 +181,41 @@ public class MultibinarySearch
 	
 	int rc_i = 0;
 	int mm_i = 0;
-	int min, max, amin = 0, amax = 0, lastmax, lastamax;
+	int imin, imax, amin = 0, amax = 0, lastimax, lastamax;
 	
 	minomax[0][mm_i] = 0;
 	minomax[1][mm_i] = m;
 	minomax[2][mm_i] = start;
 	minomax[3][mm_i++] = end - 1;
 	
+£>bin_search="BinarySearch.indexOf(items[imax], array, order_, mode_, amin, amax${Targ_name})"
+	
 	while (mm_i-- > 0)
 	{
-	    min = minomax[0][mm_i];
-	    max = minomax[1][mm_i];
+	    imin = minomax[0][mm_i];
+	    imax = minomax[1][mm_i];
 	    amin = minomax[2][mm_i];
 	    amax = minomax[3][mm_i];
 	    
-	    while (max != min)
+	    while (imax != imin)
 	    {
-		lastmax = max;
+		lastimax = imax;
 		lastamax = amax;
-		rc[0][rc_i] = max = min + ((max - min) >>> 1);
-		rc[1][rc_i++] = amax = (int)(BinarySearch.indexOf(items[max], array, order_, mode_, amin, amax£{Targ_name}));
+		rc[0][rc_i] = imax = imin + ((imax - imin) >>> 1);
+		rc[1][rc_i++] = amax = (int)(£{bin_search});
 		if (amax < 0)
 		    amax = ~amax;
 		
-		minomax[0][mm_i] = max + 1;
-		minomax[1][mm_i] = lastmax;
+		minomax[0][mm_i] = imax + 1;
+		minomax[1][mm_i] = lastimax;
 		minomax[2][mm_i] = amax + 1;
 		minomax[3][mm_i++] = lastamax;
 	    }
 	}
 	
-	max = m;
-	amax = (int)(BinarySearch.indexOf(items[max], array, order_, mode_, amin, amax£{Targ_name}));
-	rc[0][rc_i] = max;
+	imax = m;
+	amax = (int)(£{bin_search});
+	rc[0][rc_i] = imax;
 	rc[1][rc_i++] = amax;
 	
 	return rc;
