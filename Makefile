@@ -18,6 +18,9 @@ obj/%.java: src/%.java $(foreach F, $(PP), src/$(F))
 	$(GPP) -s £ < "$<" > "$@"
 
 
+obj/algorithms/searching/MultibinarySearch.class: obj/algorithms/searching/BinarySearch.class
+
+
 .PHONY: clean
 clean:
 	-rm -r -- bin obj

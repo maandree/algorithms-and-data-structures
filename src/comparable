@@ -4,6 +4,7 @@ Telement="${T}"
 Tarray="${Telement}[]"
 Tparam=""
 Targ=""
+Targ_name=""
 function T-array
 {
     elems=""
@@ -42,6 +43,7 @@ elif [[ "${T}" = @(T|T+|T++) ]]; then
     if [ "${T}" = T ]; then
 	Tparam="<T> "
 	Targ=", Comparator<T> comparator"
+	Targ_name=", comparator"
 	function cmp
 	{   echo "comparator.compare($1, $2)"
 	}
@@ -66,12 +68,10 @@ elif [[ "${T}" = @(T|T+|T++) ]]; then
     else
 	if [ "${T}" = T++ ]; then
 	    Tparam="<T> "
-	    Targ=""
 	    Telement="Comparable<T>"
 	    Tarray="${Telement}[]"
 	else
 	    Tparam="<T extends Comparable<? super T>> "
-	    Targ=""
 	fi
 	function cmp
 	{   echo "($1).compareTo($2)"
