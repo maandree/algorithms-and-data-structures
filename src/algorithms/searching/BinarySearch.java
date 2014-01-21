@@ -151,7 +151,7 @@ public class BinarySearch
 	    if (low > 0)
 		return TOO_SMALL;
 	    
-	    int high = £(cmp "array[1]" "item");
+	    int high = £(cmp "array[end - 1]" "item");
 	    
 	    if (low == 0)
 		return high == 0 ? EVERY_ELEMENT : start;
@@ -163,13 +163,12 @@ public class BinarySearch
 	    if (low < 0)
 		return TOO_SMALL;
             
-	    int n = end - 1;
-	    int high = £(cmp "array[n]" "item");
+	    int high = £(cmp "array[end - 1]" "item");
 	    
 	    if (low == 0)
 		return high == 0 ? EVERY_ELEMENT : start;
 	    
-	    return high == 0 ? n : high > 0 ? TOO_LARGE : MAYBE;
+	    return high == 0 ? end - 1 : high > 0 ? TOO_LARGE : MAYBE;
 	}
     }
     

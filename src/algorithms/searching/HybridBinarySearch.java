@@ -104,7 +104,6 @@ public class HybridBinarySearch
     
     
 £>for T in boolean char byte short int long float double T T++; do . src/comparable
-    
     /**
      * Gets whether an item may be contained by a list
      *
@@ -116,34 +115,64 @@ public class HybridBinarySearch
      */
     public static £(fun "int" contains "${T} item, ${Tarray} array, SortOrder order")
     {
+	return contains(item, array, order, 0, array.length£{Targ_name});
+    }
+    
+    /**
+     * Gets whether an item may be contained by a list
+     *
+     * @param   item   The item for which to search
+     * @param   array  The list in which to search
+     * @param   order  The list's element order
+     * @param   start  The index of the first position to search in the array
+     * @return         {@link #MAYBE}, {@link #TOO_SMALL}, {@link #TOO_LARGE}, {@link #EVERY_ELEMENT}
+     *                 or the index of a(!) found item [first or last position]
+     */
+    public static £(fun "int" contains "${T} item, ${Tarray} array, SortOrder order, int start")
+    {
+	return contains(item, array, order, start, array.length£{Targ_name});
+    }
+    
+    /**
+     * Gets whether an item may be contained by a list
+     *
+     * @param   item   The item for which to search
+     * @param   array  The list in which to search
+     * @param   order  The list's element order
+     * @param   start  The index of the first position to search in the array
+     * @param   end    The index after the last position to search in the array
+     * @return         {@link #MAYBE}, {@link #TOO_SMALL}, {@link #TOO_LARGE}, {@link #EVERY_ELEMENT}
+     *                 or the index of a(!) found item [first or last position]
+     */
+    public static £(fun "int" contains "${T} item, ${Tarray} array, SortOrder order, int start, int end")
+    {
 	/* This is identical to as in BinarySearch */
 	
-	int low = £(cmp "array[0]" "item");
+	int low = £(cmp "array[start]" "item");
         
 	if (order == SortOrder.ASCENDING)
 	{
 	    if (low > 0)
 		return TOO_SMALL;
 	    
-	    int high = £(cmp "array[1]" "item");
+	    int high = £(cmp "array[end - 1]" "item");
 	    
 	    if (low == 0)
 		return high == 0 ? EVERY_ELEMENT : 0;
 	    
-	    return high == 0 ? array.length - 1 : high < 0 ? TOO_LARGE : MAYBE;
+	    return high == 0 ? end - 1 : high < 0 ? TOO_LARGE : MAYBE;
 	}
         
 	{
 	    if (low < 0)
 		return TOO_SMALL;
             
-	    int n = array.length - 1;
-	    int high = £(cmp "array[n]" "item");
+	    int high = £(cmp "array[end - 1]" "item");
 	    
 	    if (low == 0)
 		return high == 0 ? EVERY_ELEMENT : 0;
 	    
-	    return high == 0 ? n : high > 0 ? TOO_LARGE : MAYBE;
+	    return high == 0 ? end - 1 : high > 0 ? TOO_LARGE : MAYBE;
 	}
     }
     
@@ -191,10 +220,45 @@ public class HybridBinarySearch
      */
     public static £(fun "long" indexOf "${T} item, ${Tarray} array, SortOrder order, SearchMode mode, int fallback")
     {
+	return indexOf(item, array, order, mode, fallback, 0, array.length£{Targ_name});
+    }
+    
+    /**
+     * Finds the first, last or any occurance of an item in a list
+     *
+     * @param   item      The item for which to search
+     * @param   array     The list in which to search
+     * @param   order     The list's element order
+     * @param   mode      The search mode
+     * @param   fallback  The number of elements at when to fall back to linear search
+     * @param   start     The index of the first position to search in the array
+     * @return            The index of the found item, if not mode does not say otherwise, or, if not
+     *                    found, the bitwise negation of the position to which it should be inserted
+     */
+    public static £(fun "long" indexOf "${T} item, ${Tarray} array, SortOrder order, SearchMode mode, int fallback, int start")
+    {
+	return indexOf(item, array, order, mode, fallback, start, array.length£{Targ_name});
+    }
+    
+    /**
+     * Finds the first, last or any occurance of an item in a list
+     *
+     * @param   item      The item for which to search
+     * @param   array     The list in which to search
+     * @param   order     The list's element order
+     * @param   mode      The search mode
+     * @param   fallback  The number of elements at when to fall back to linear search
+     * @param   start     The index of the first position to search in the array
+     * @param   end       The index after the last position to search in the array
+     * @return            The index of the found item, if not mode does not say otherwise, or, if not
+     *                    found, the bitwise negation of the position to which it should be inserted
+     */
+    public static £(fun "long" indexOf "${T} item, ${Tarray} array, SortOrder order, SearchMode mode, int fallback, int start, int end")
+    {
         £{Telement} x;
         
-        int min = 0, mid, rc = -1;
-        int max = array.length - 1;
+        int min = start, mid, rc = -1;
+        int max = end - 1;
 	
 £>function f
 £>{
