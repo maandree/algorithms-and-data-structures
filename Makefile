@@ -11,7 +11,7 @@ OBJ = $(shell find src | grep '\.java$$' | sed -e 's:^src:obj:' | sed -e 's:java
 all: $(OBJ)
 
 obj/%.class: obj/%.java
-	$(JAVAC) -s obj -d obj -cp obj "$<"
+	$(JAVAC) '-Xlint:all,-cast' -s obj -d obj -cp obj "$<"
 
 obj/%.java: src/%.java $(foreach F, $(PP), src/$(F))
 	mkdir -p "$(shell dirname "$@")"
