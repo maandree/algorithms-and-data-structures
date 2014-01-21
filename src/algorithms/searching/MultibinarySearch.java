@@ -89,7 +89,7 @@ public class MultibinarySearch
      *                 of elements is named ‘m’ in the complexity analysis
      * @param   array  Sorted list in which to search, the number of elements
      *                 is named ‘n’ in the complexity analysis
-     * @param   order  The lists' element order
+     * @param   order  The lists' (both) element order
      * @param   mode   The search mode
      * @return         Two arrays of integer arrays, the 0:th being the indices
      *                 of items, the 1:th being their positions. That is,
@@ -112,7 +112,7 @@ public class MultibinarySearch
      *                 of elements is named ‘m’ in the complexity analysis
      * @param   array  Sorted list in which to search, the number of elements
      *                 is named ‘n’ in the complexity analysis
-     * @param   order  The lists' element order
+     * @param   order  The lists' (both) element order
      * @param   mode   The search mode
      * @param   start  The index of the first position to search in the array
      * @return         Two arrays of integer arrays, the 0:th being the indices
