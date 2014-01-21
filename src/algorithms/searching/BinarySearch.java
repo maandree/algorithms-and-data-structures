@@ -168,6 +168,7 @@ public class BinarySearch
 		    if (item == (x = array[mid = (min + max) >>> 1]))
 			£{2};
 		    
+		    /* NB! (x R item), instead of (item R x) */
 		    if (£(${3} x item))  min = mid + 1;
 		    else                 max = mid - 1;
 		    
@@ -192,6 +193,7 @@ public class BinarySearch
 £>fi
 		}
 		
+		/* NB! (x R item), instead of (item R x) */
 		if (£(${1} x item))  min = mid + 1;
 		else                 max = mid - 1;
 		
@@ -223,8 +225,8 @@ public class BinarySearch
 £>}
 	
         if (order == SortOrder.ASCENDING)
-£>_  'greater'
 £>_  'less'
+£>_  'greater'
     }
 £>done
 }
