@@ -169,7 +169,7 @@ public class HybridBinarySearch
 	    if (i == n)
 		break;
             
-	    if (£(equal array[i] item))
+	    if (£(equal "array[i]" item))
 		return i;
             
 	    i++;
