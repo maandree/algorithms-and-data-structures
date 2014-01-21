@@ -159,7 +159,7 @@ public class HybridBinarySearch
      */
     private static £(fun "int" linearFirst "${T} item, ${T}[] array, int start, int end")
     {
-	/* This is nearly identical to  LinearSearch.indexOfFirst */
+	/* This is nearly identical to LinearSearch.indexOfFirst */
 	
         int i = start < 0 ? (array.length - start) : start;
         int n =   end < 0 ? (array.length -   end) :   end;
@@ -169,7 +169,7 @@ public class HybridBinarySearch
 	    if (i == n)
 		break;
             
-	    if (array[i] == item)
+	    if (£(equal array[i] item))
 		return i;
             
 	    i++;

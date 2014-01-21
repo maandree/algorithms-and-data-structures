@@ -129,6 +129,15 @@ else
     {   echo "($1) < ($2)"
     }
 fi
+if [[ "${T}" = @(boolean|char|byte|short|int|long|float|double) ]]; then 
+    function equal
+    {   echo "($1) == ($2)"
+    }
+else
+    function equal
+    {   echo "($1).equals($2)"
+    }
+fi
 function fun
 {
     echo "${Tparam}${1} ${2}(${3}${Targ})"
