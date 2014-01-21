@@ -197,11 +197,13 @@ public class MultibinarySearch
 		lastimax = imax;
 		lastamax = amax;
 		rc[0][rc_i] = imax = imin + ((imax - imin) >>> 1);
-		rc[1][rc_i++] = amax = (int)(£{bin_search});
+		amax = (int)(rc[1][rc_i++] = £{bin_search});
 		if (amax < 0)
 		    amax = ~amax;
+		/* This is possible to do, but you will probably lose performance:
 		else if (mode == SearchMode.FIND_FIRST_AND_LAST)
-		    amax >>= 32L;
+		    amax = (int)(rc[1][rc_i - 1] >> 32L);
+		*/
 		
 		minomax[0][mm_i] = imax + 1;
 		minomax[1][mm_i] = lastimax;
