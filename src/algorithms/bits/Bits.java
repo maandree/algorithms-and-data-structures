@@ -62,17 +62,73 @@ public class Bits
      * Lookup table for the parity of the bits in a byte
      */
     private static byte[] PARITY_TABLE_256 = { £(parity-table 4 0) };
+
+
+£<function reverse-table
+  {
+      if [ $1 = 0 ]; then
+	  if (( $2 < 128 )); then
+              echo -n "${2}, "
+	  else
+              echo -n "$(( $2 - 256 )), "
+	  fi
+      else
+	  level=$(( $1 - 1 ))
+	  reverse-table $level $(( $2 + 0 * 4 ** (4 - $1) ))
+	  reverse-table $level $(( $2 + 2 * 4 ** (4 - $1) ))
+	  reverse-table $level $(( $2 + 1 * 4 ** (4 - $1) ))
+	  reverse-table $level $(( $2 + 3 * 4 ** (4 - $1) ))
+      fi
+£>}
+
+    /**
+     * Lookup table for the revered bit order in a byte
+     */
+    private static byte[] REVERSE_TABLE_256 = { £(reverse-table 4 0) };
     
     
     /**
      * Compute the parity of all bits in an integer, 64-bit multiply–modulus version
      * 
-     * @param   value  The interger
+     * @param   value  The integer
      * @return         The parity
      */
     public static int parity_64bit(byte value)
     {
 	return (int)(((value * 0x0101010101010101L) & 0x8040201008040201L) % 0x1FF) & 1;
+    }
+    
+    /**
+     * Reverse the order of all bits in an integer, 64-bit instructions version
+     * 
+     * @param   value  The integer
+     * @return         The integer reversed
+     */
+    public static byte reverse_64bit(byte value)
+    {
+	return (byte)(((value * 0x0202020202L) & 0x010884422010L) % 1023);
+    }
+    
+    /**
+     * Reverse the order of all bits in an integer, division-free 64-bit instructions version
+     * 
+     * @param   value  The integer
+     * @return         The integer reversed
+     */
+    public static byte reverse_64bit_noMod(byte value)
+    {
+	return (byte)(((value * 0x80200802L) & 0x0884422110L) * 0x0101010101L >> 32);
+    }
+    
+    /**
+     * Reverse the order of all bits in an integer, 32-bit instructions version
+     * 
+     * @param   value  The integer
+     * @return         The integer reversed
+     */
+    public static byte reverse_32bit(byte value)
+    {
+	return (byte)(((value * 0x0802 & 0x22110) | (value * 0x8020 & 0x88440)) * 0x10101 >> 16);
     }
     
 £<for T_S in char_2 byte_1 short_2 int_4 long_8; do
@@ -274,7 +330,7 @@ public class Bits
     /**
      * Compute the parity of all bits in an integer, naïve version
      * 
-     * @param   value  The interger
+     * @param   value  The integer
      * @return         The parity
      */
     public static £{T} parity_naïve(£{T} value)
@@ -291,7 +347,7 @@ public class Bits
     /**
      * Compute the parity of all bits in an integer, parallel version
      * 
-     * @param   value  The interger
+     * @param   value  The integer
      * @return         The parity
      */
     public static £{T} parity_parallel(£{T} value)
@@ -312,7 +368,7 @@ public class Bits
     /**
      * Compute the parity of all bits in an integer, partial lookup table version
      * 
-     * @param   value  The interger
+     * @param   value  The integer
      * @return         The parity
      */
     public static byte parity_table(£{T} value)
@@ -329,7 +385,7 @@ public class Bits
     /**
      * Compute the parity of all bits in an integer, optimised parallel version
      * 
-     * @param   value  The interger
+     * @param   value  The integer
      * @return         The parity
      */
     public static int parity_optimised_parallel(£{T} value)
@@ -347,7 +403,7 @@ public class Bits
     /**
      * Compute the parity of all bits in an integer, multiplication version
      * 
-     * @param   value  The interger
+     * @param   value  The integer
      * @return         The parity
      */
     public static £{T} parity_multiplication(£{T} value)
@@ -356,6 +412,61 @@ public class Bits
 	value ^= value >> 2;
 	value = (£{T})((value & (£{T})0x1111111111111111L) * (£{T})0x1111111111111111L);
 	return (£{T})((value >> (£{S} - 4)) & 1);
+    }
+    
+    /**
+     * Reverse the order of all bits in an integer, naïve version
+     * 
+     * @param   value  The integer
+     * @return         The integer reversed
+     */
+    public static £{T} reverse_naïve(£{T} value)
+    {
+	int s = £{S} * 8 - 1;
+	£{T} rc = value;
+	for (value >>>= 1; value != 0; value >>>= 1)
+	{
+	    rc <<= 1;
+	    rc |= value & 1;
+	    s--;
+	}
+	return (£{T})(rc << s);
+    }
+    
+    /**
+     * Reverse the order of all bits in an integer, parallel version
+     * 
+     * @param   value  The integer
+     * @return         The integer reversed
+     */
+    public static £{T} reverse_parallel(£{T} value)
+    {
+	value = (£{T})(((value & (£{T})0x5555555555555555L) <<  1) | ((value >>  1) & (£{T})0x5555555555555555L));
+	value = (£{T})(((value & (£{T})0x3333333333333333L) <<  2) | ((value >>  2) & (£{T})0x3333333333333333L));
+	value = (£{T})(((value & (£{T})0x0F0F0F0F0F0F0F0FL) <<  4) | ((value >>  4) & (£{T})0x0F0F0F0F0F0F0F0FL));
+£>(( $S > 1 )) &&
+	value = (£{T})(((value & (£{T})0x00FF00FF00FF00FFL) <<  8) | ((value >>  8) & (£{T})0x00FF00FF00FF00FFL));
+£>(( $S > 2 )) &&
+	value = (£{T})(((value & (£{T})0x0000FFFF0000FFFFL) << 16) | ((value >> 16) & (£{T})0x0000FFFF0000FFFFL));
+£>(( $S > 4 )) &&
+	value = (£{T})(((value & (£{T})0x00000000FFFFFFFFL) << 32) | ((value >> 32) & (£{T})0x00000000FFFFFFFFL));
+	return value;
+    }
+    
+    /**
+     * Reverse the order of all bits in an integer, partial lookup table version
+     * 
+     * @param   value  The integer
+     * @return         The integer reversed
+     */
+    public static £{T} reverse_table(£{T} value)
+    {
+£>function _ { echo "(${T})(REVERSE_TABLE_256[(int)((value >> $1) & 255)] << $2)" ; }
+	£{T} rc = 0;
+£>for s in `seq 0 8 $(( $S - 8 ))`; do
+	rc |= £(_ $s "($S - 8 - $s)");
+£>done
+	return rc;
     }
 £>done
 }
