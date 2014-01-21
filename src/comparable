@@ -1,5 +1,7 @@
 # -*- shell-script -*-
 
+Telement="${T}"
+Tarray="${Telement}[]"
 Tparam=""
 Targ=""
 function T-array
@@ -8,13 +10,16 @@ function T-array
     for elem in "$@"; do
 	elems="${elems:+${elems}, }${elem}"
     done
-    if [ $T = T ]; then
+    if [ "${T}" = T ]; then
 	echo "((${T}[])(new Object[] { ${elems} }))"
     else
 	echo "(new ${T}[] { ${elems} })"
     fi
 }
-if [ $T = boolean ]; then
+if [ "${T}" = boolean ]; then
+    function cmp
+    {   echo "(($1) == ($2) ? 0 : ($1) ? 1 : -1)"
+    }
     function greater
     {   echo "($1) & !($2)"
     }
@@ -33,10 +38,13 @@ if [ $T = boolean ]; then
     function less
     {   echo "!($1) & ($2)"
     }
-elif [ $T = T ] || [ $T = T+ ]; then
-    if [ $T = T ]; then
+elif [[ "${T}" = @(T|T+|T++) ]]; then
+    if [ "${T}" = T ]; then
 	Tparam="<T> "
 	Targ=", Comparator<T> comparator"
+	function cmp
+	{   echo "comparator.compare($1, $2)"
+	}
 	function greater
 	{   echo "comparator.compare($1, $2) > 0"
 	}
@@ -56,8 +64,18 @@ elif [ $T = T ] || [ $T = T+ ]; then
 	{   echo "comparator.compare($1, $2) < 0"
 	}
     else
-	Tparam="<T extends Comparable<? super T>> "
-	Targ=""
+	if [ "${T}" = T++ ]; then
+	    Tparam="<T> "
+	    Targ=""
+	    Telement="Comparable<T>"
+	    Tarray="${Telement}[]"
+	else
+	    Tparam="<T extends Comparable<? super T>> "
+	    Targ=""
+	fi
+	function cmp
+	{   echo "($1).compareTo($2)"
+	}
 	function greater
 	{   echo "($1).compareTo($2) > 0"
 	}
@@ -79,6 +97,19 @@ elif [ $T = T ] || [ $T = T+ ]; then
 	T=T
     fi
 else
+    if [ "${T}" = long ]; then
+	function cmp
+	{   echo "(int)(($1) - ($2) | ($1) - ($2) >> 32L)"
+	}
+    elif [[ "${T}" = @(float|double) ]]; then
+	function cmp
+	{   echo "(($1) < ($2) ? -1 : ($1) > ($2) ? 1 : 0)"
+	}
+    else
+	function cmp
+	{   echo "(($1) - ($2))"
+	}
+    fi
     function greater
     {   echo "($1) > ($2)"
     }
