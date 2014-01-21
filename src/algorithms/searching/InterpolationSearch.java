@@ -42,9 +42,38 @@ public class InterpolationSearch
      */
     public static int indexOf(£{T} item, £{T}[] array)
     {
+	return indexOf(item, array, 0, array.length);
+    }
+    
+    /**
+     * Find the easiest to find occurance of an item in a list
+     *
+     * @param   item   The item to find
+     * @param   array  The list in which to search
+     * @param   start  The index of the first position to search in the array
+     * @return         The index of the easiest to find occurance of the item. The bitwise
+     *                 negation of the position it insert it in is returned if it was not found.
+     */
+    public static int indexOf(£{T} item, £{T}[] array, int start)
+    {
+	return indexOf(item, array, start, array.length);
+    }
+    
+    /**
+     * Find the easiest to find occurance of an item in a list
+     *
+     * @param   item   The item to find
+     * @param   array  The list in which to search
+     * @param   start  The index of the first position to search in the array
+     * @param   end    The index after the last position to search in the array
+     * @return         The index of the easiest to find occurance of the item. The bitwise
+     *                 negation of the position it insert it in is returned if it was not found.
+     */
+    public static int indexOf(£{T} item, £{T}[] array, int start, int end)
+    {
 	£{T} low, high, at;
-	int min = 0, mid;
-	int max = array.length - 1;
+	int min = start, mid;
+	int max = end - 1;
 	
 	for (;;)
 	{
@@ -74,9 +103,38 @@ public class InterpolationSearch
      */
     public static int indexOf(£{T} item, £{T}[] array)
     {
+	return indexOf(item, array, 0, array.length);
+    }
+    
+    /**
+     * Find the easiest to find occurance of an item in a list
+     *
+     * @param   item   The item to find
+     * @param   array  The list in which to search
+     * @param   start  The index of the first position to search in the array
+     * @return         The index of the easiest to find occurance of the item. The bitwise
+     *                 negation of the position it insert it in is returned if it was not found.
+     */
+    public static int indexOf(£{T} item, £{T}[] array, int start)
+    {
+	return indexOf(item, array, start, array.length);
+    }
+    
+    /**
+     * Find the easiest to find occurance of an item in a list
+     *
+     * @param   item   The item to find
+     * @param   array  The list in which to search
+     * @param   start  The index of the first position to search in the array
+     * @param   end    The index after the last position to search in the array
+     * @return         The index of the easiest to find occurance of the item. The bitwise
+     *                 negation of the position it insert it in is returned if it was not found.
+     */
+    public static int indexOf(£{T} item, £{T}[] array, int start, int end)
+    {
         £{T} low, high, at;
-        int min = 0, mid;
-        int max = array.length - 1;
+        int min = start, mid;
+        int max = end - 1;
  
         for (;;)
 	{
