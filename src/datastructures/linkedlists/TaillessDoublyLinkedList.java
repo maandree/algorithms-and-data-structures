@@ -18,8 +18,8 @@ package datastructures.linkedlists;
 
 
 /**
- * Doubly linked list class. A linked list is a
- * list constructed from nodes, which hold stored
+ * Tailless doubly linked list class. A linked list
+ * is a list constructed from nodes, which hold stored
  * values, with references to each other, this is
  * usally an ineffective data structure, especially
  * on high-level object orientated languages. A
@@ -35,6 +35,6 @@ package datastructures.linkedlists;
  * @param  <T>  The value stored in the structure
  */
 public class TaillessDoublyLinkedList<T>
-£>export with_tail=0 with_prev=1
+£>export with_head=1 with_tail=0 with_prev=1
 £>gpp -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
 

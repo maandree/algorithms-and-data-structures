@@ -18,7 +18,7 @@ package datastructures.linkedlists;
 
 
 /**
- * Taileess singly linked list class. A linked list
+ * Tailless singly linked list class. A linked list
  * is a list constructed from nodes, which hold
  * stored values, with references to each other,
  * this is usally an ineffective data structure,
@@ -34,6 +34,6 @@ package datastructures.linkedlists;
  * @param  <T>  The value stored in the structure
  */
 public class TaillessSinglyLinkedList<T>
-£>export with_tail=0 with_prev=0
+£>export with_head=1 with_tail=0 with_prev=0
 £>gpp -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
 
