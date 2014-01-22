@@ -6,6 +6,8 @@ SRC = $(shell find src | grep '\.java$$')
 PPD = $(shell find src | grep '\.java$$' | sed -e 's:^src:obj:')
 OBJ = $(shell find src | grep '\.java$$' | sed -e 's:^src:obj:' | sed -e 's:java$$:class:')
 
+OBJ_LINKED_LISTS = $(shell find src/datastructures/linkedlists | grep 'LinkedList.java$$' | sed -e 's:^src:obj:')
+
 
 .PHONY: all
 all: $(OBJ)
@@ -18,7 +20,7 @@ obj/%.java: src/%.java $(foreach F, $(PP), src/$(F))
 	$(GPP) -s £ < "$<" > "$@"
 
 
-obj/datastructures/linkedlists/*.java: src/datastructures/linkedlists/template
+$(OBJ_LINKED_LISTS): src/datastructures/linkedlists/template
 obj/algorithms/searching/MultiinterpolationSearch.class: obj/algorithms/searching/InterpolationSearch.class
 obj/algorithms/searching/MultibinarySearch.class: obj/algorithms/searching/BinarySearch.class
 

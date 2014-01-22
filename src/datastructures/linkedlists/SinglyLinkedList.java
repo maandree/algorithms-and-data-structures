@@ -35,6 +35,6 @@ package datastructures.linkedlists;
  * @param  <T>  The value stored in the structure
  */
 public class SinglyLinkedList<T>
-£>export with_tail=1
+£>export with_tail=1 with_prev=0
 £>gpp -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
 

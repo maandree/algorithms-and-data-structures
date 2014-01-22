@@ -18,22 +18,23 @@ package datastructures.linkedlists;
 
 
 /**
- * Taileess singly linked list class. A linked list
- * is a list constructed from nodes, which hold
- * stored values, with references to each other,
- * this is usally an ineffective data structure,
- * especially on high-level object orientated
- * languages. A singly linked list only stores nodes
- * with references to the following node. It also
- * stores one refence nodes, the first node in the
- * list. The implemention only implements methods
- * that do not require iterating over all nodes for
- * find a specific; all other methods' — those that
- * are implemented — time complexity is Θ(1).
+ * Doubly linked list class. A linked list is a
+ * list constructed from nodes, which hold stored
+ * values, with references to each other, this is
+ * usally an ineffective data structure, especially
+ * on high-level object orientated languages. A
+ * doublely linked list stores nodes with references
+ * to both the following node and the previous node.
+ * It also stores two refence nodes, the first node
+ * in the list, and the last node in the list. The
+ * implemention only implements methods that do not
+ * require iterating over all nodes for find a
+ * specific; all other methods' — those that are
+ * implemented — time complexity is Θ(1).
  * 
  * @param  <T>  The value stored in the structure
  */
-public class TaillessSinglyLinkedList<T>
-£>export with_tail=0 with_prev=0
+public class DoublyLinkedList<T>
+£>export with_tail=1 with_prev=1
 £>gpp -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
 
