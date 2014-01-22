@@ -18,6 +18,7 @@ obj/%.java: src/%.java $(foreach F, $(PP), src/$(F))
 	$(GPP) -s £ < "$<" > "$@"
 
 
+obj/datastructures/linkedlists/*.java: src/datastructures/linkedlists/template
 obj/algorithms/searching/MultiinterpolationSearch.class: obj/algorithms/searching/InterpolationSearch.class
 obj/algorithms/searching/MultibinarySearch.class: obj/algorithms/searching/BinarySearch.class
 
