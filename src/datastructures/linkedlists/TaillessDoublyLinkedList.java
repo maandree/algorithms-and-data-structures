@@ -26,7 +26,7 @@ package datastructures.linkedlists;
  * doublely linked list stores nodes with references
  * to both the following node and the previous node.
  * It also stores one refence nodes, the first node
- * in the list. The implemention only implements
+ * in the list. This implemention only implements
  * methods that do not require iterating over all
  * nodes for find a specific; all other methods' —
  * those that are  * implemented — time complexity

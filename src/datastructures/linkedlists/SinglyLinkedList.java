@@ -26,7 +26,7 @@ package datastructures.linkedlists;
  * singly linked list only stores nodes with
  * references to the following node. It also stores
  * two refence nodes, the first node in the list,
- * and the last node in the list. The implemention
+ * and the last node in the list. This implemention
  * only implements methods that do not require
  * iterating over all nodes for find a specific;
  * all other methods' — those that are implemented

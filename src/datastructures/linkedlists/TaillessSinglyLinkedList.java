@@ -26,7 +26,7 @@ package datastructures.linkedlists;
  * languages. A singly linked list only stores nodes
  * with references to the following node. It also
  * stores one refence nodes, the first node in the
- * list. The implemention only implements methods
+ * list. This implemention only implements methods
  * that do not require iterating over all nodes for
  * find a specific; all other methods' — those that
  * are implemented — time complexity is Θ(1).
