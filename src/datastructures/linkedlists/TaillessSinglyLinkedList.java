@@ -35,5 +35,5 @@ package datastructures.linkedlists;
  */
 public class TaillessSinglyLinkedList<T>
 £>export with_head=1 with_tail=0 with_prev=0
-£>gpp -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
+£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
 

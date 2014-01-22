@@ -38,5 +38,5 @@ package datastructures.linkedlists;
  */
 public class CircularDoublyLinkedList<T>
 £>export with_head=0 with_tail=0 with_prev=1
-£>gpp -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
+£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
 

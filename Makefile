@@ -17,7 +17,7 @@ obj/%.class: obj/%.java
 
 obj/%.java: src/%.java $(foreach F, $(PP), src/$(F))
 	mkdir -p "$(shell dirname "$@")"
-	$(GPP) -s £ < "$<" > "$@"
+	env GPP="$(GPP)" $(GPP) -s £ < "$<" > "$@"
 
 
 $(OBJ_LINKED_LISTS): src/datastructures/linkedlists/template
