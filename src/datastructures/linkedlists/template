@@ -193,7 +193,7 @@
 	node.next = successor;
 	if (node.previous != null)
 	    node.previous.next = node;
-£>if (( with_tail )); then
+£>if (( with_head )); then
 	if (this.head == successor)
 	    this.head = node;
 £>fi
@@ -252,7 +252,10 @@
     public Node insertEnd(T value)
     {
 	if (this.tail == null)
+£>(( with_head )) &&
 	    return insertBeginning(value);
+£>(( with_head )) ||
+	    return this.tail = new Node(value);
 	return insertAfter(value, this.tail);
     }
 
