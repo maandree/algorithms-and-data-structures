@@ -18,14 +18,17 @@ package datastructures.linkedlists;
 
 
 /**
- * Array doubly linked list class. An array linked list
- * is a linked list constructed by parallel arrays. In
- * this implementation, when a node is removed the value
- * stored that that position is not removed before that
- * position is reused.
+ * Array sentinel doubly linked list class. An array
+ * linked list is a linked list constructed by parallel
+ * arrays. A sentinel linked list is a linear linked
+ * listed constructed as a circular linked listed with
+ * a sentinel (dummy) node between the first node and
+ * the last node. In this implementation, when a node
+ * is removed the value stored that that position is
+ * not removed before that position is reused.
  * 
  * @param  <T>  The value stored in the structure
  */
-£>export name=ArrayDoublyLinkedList with_sentinel=0 with_head=1 with_tail=1 with_prev=1
+£>export name=ArraySentinelDoublyLinkedList with_sentinel=1 with_head=0 with_tail=0 with_prev=1
 £>$GPP -s £ < src/datastructures/linkedlists/array-template | sed -e '/^[/ ]\*/d'
 

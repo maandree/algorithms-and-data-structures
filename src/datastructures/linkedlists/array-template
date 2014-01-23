@@ -17,15 +17,24 @@
  */
 public class £{name}<T>
 {
+£<EDGE=EDGE ; (( with_sentinel )) && EDGE=edge
+  circular=0
+  if (( with_sentinel )) || (( (1 - with_head) * (1 - with_tail) )); then
+      circular=1
+£>fi
+
+
     /**
      * The default initial capacity
      */
     private static final int DEFAULT_INITIAL_CAPACITY = 128;
     
+£>if (( 1 - with_sentinel )); then
     /**
      * Sentinel value indicating that an edge has been reached
      */
     public static final int EDGE = -1;
+£>fi
     
     /**
      * Sentinel value indicating that the position is unused
@@ -92,6 +101,13 @@ public class £{name}<T>
      */
     private int[] reusable;
     
+£>if (( with_sentinel )); then
+    /**
+     * The sentinel node in the list
+     */
+    public int edge;
+£>fi
+    
 £>if (( with_head )); then
     /**
      * The first node in the list
@@ -112,7 +128,7 @@ public class £{name}<T>
     public T[] values;
     
     /**
-     * The next node for each node, {@link #EDGE}
+     * The next node for each node, {@link #£{EDGE}}
      * if the current node is the last node, and
      * {@link #UNUSED} if there is no node on this
      * position
@@ -121,12 +137,27 @@ public class £{name}<T>
     
 £>if (( with_prev )); then
     /**
-     * The previou node for each node, {@link #EDGE}
+     * The previou node for each node, {@link #£{EDGE}}
      * if the current node is the first node, and
      * {@link #UNUSED} if there is no node on this
      * position
      */
     public int[] previous;
+£>fi
+    
+    
+    
+£>if (( with_sentinel )); then
+    /**
+     * Initialiser
+     */
+    {
+	this.edge = getNext();
+	this.values[this.edge] = null;
+	this.next[this.edge] = this.edge;
+£>(( with_prev )) &&
+	this.previous[this.edge] = this.edge;
+    }
 £>fi
     
     
@@ -164,6 +195,8 @@ public class £{name}<T>
 	    head++;
 	if (head < this.end)
 	    for (int ptr = 0, node = head; (node != head) || (ptr == 0);)
+£>elif (( with_sentinel )); then
+	for (int ptr = 0, node = this.edge; (node != this.edge) || (ptr == 0);)
 £>else
 	for (int ptr = 0, node = this.head; node != EDGE;)
 £>fi
@@ -180,13 +213,16 @@ public class £{name}<T>
 	    this.previous = new int[cap];
 	}
 	
+£>LAST=EDGE ; BEGINNING=0 ; (( circular )) && { LAST=0; BEGINNING=1; }
 	for (int i = 0; i < size;)
 	    this.next[i] = ++i;
-	this.next[size - 1] = EDGE;
+	this.next[size - 1] = £{LAST};
 	
 £>if (( with_prev )); then
-	for (int i = 0; i < size; i++)
+	for (int i = £{BEGINNING}; i < size; i++)
 	    this.previous[i] = i - 1;
+£>(( circular )) &&
+	this.previous[0] = size - 1;
 £>fi
 	
 	this.values = vals;
@@ -240,7 +276,7 @@ public class £{name}<T>
     }
     
     
-£>if (( 1 - with_head )) && (( 1 - with_tail )); then
+£>if (( 1 - with_sentinel )) && (( 1 - with_head )) && (( 1 - with_tail )); then
     /**
      * Creates the initial node in a circularly linked list
      * 
@@ -258,7 +294,7 @@ public class £{name}<T>
 £>fi
     
     
-£>if (( with_head )); then
+£>if (( with_head )) || (( with_sentinel )); then
     /**
      * Insert a value in the beginning of the list.
      * This methods has constant amortised time complexity.
@@ -267,6 +303,11 @@ public class £{name}<T>
      * @return         The node that has been created and inserted
      */
     public int insertBeginning(T value)
+£>if (( with_sentinel )); then
+    {
+	return insertAfter(value, this.edge);
+    }
+£>else
     {
 	int node = getNext();
 	this.values[node] = value;
@@ -282,6 +323,7 @@ public class £{name}<T>
 	this.head = node;
 	return node;
     }
+£>fi
     
     /**
      * Remove the node at the beginning of the list.
@@ -290,6 +332,11 @@ public class £{name}<T>
      * @return  The node that has been removed
      */
     public int removeBeginning()
+£>if (( with_sentinel )); then
+    {
+	return removeAfter(this.edge);
+    }
+£>else
     {
 	int node = this.head;
 	if (node != EDGE)
@@ -304,6 +351,7 @@ public class £{name}<T>
 £>fi
 	return unuse(node);
     }
+£>fi
 £>fi
     
     
@@ -323,6 +371,7 @@ public class £{name}<T>
 	this.next[predecessor] = node;
 £>if (( with_prev )); then
 	this.previous[node] = predecessor;
+£>(( 1 - with_sentinel )) &&
 	if (this.next[node] != EDGE)
 	    this.previous[this.next[node]] = node;
 £>fi
@@ -343,16 +392,20 @@ public class £{name}<T>
     public int removeAfter(int predecessor)
     {
 	int node = this.next[predecessor];
-	if (node == EDGE)
+£>(( 1 - with_sentinel )) &&
+	if (node != EDGE)
+	{
 	    this.next[predecessor] = this.next[node];
 £>if (( with_prev )); then
-	else if (this.next[node] != EDGE)
-	    this.previous[this.next[node]] = predecessor;
+£>(( 1 - with_sentinel )) &&
+	    if (this.next[node] != EDGE)
+		this.previous[this.next[node]] = predecessor;
 £>fi
 £>if (( with_tail )); then
-	if (this.tail == node)
-	    this.tail = predecessor;
+	    if (this.tail == node)
+		this.tail = predecessor;
 £>fi
+	}
 	return unuse(node);
     }
     
@@ -373,6 +426,7 @@ public class £{name}<T>
 	this.previous[node] = this.previous[successor];
 	this.previous[successor] = node;
 	this.next[node] = successor;
+£>(( 1 - with_sentinel )) &&
 	if (this.previous[node] != EDGE)
 	    this.next[this.previous[node]] = node;
 £>if (( with_head )); then
@@ -392,14 +446,18 @@ public class £{name}<T>
     public int removeBefore(int successor)
     {
 	int node = this.previous[successor];
-	if (node == EDGE)
+£>(( 1 - with_sentinel )) &&
+	if (node != EDGE)
+	{
 	    this.previous[successor] = this.previous[node];
-	else if (this.previous[node] != EDGE)
-	    this.next[this.previous[node]] = successor;
+£>(( 1 - with_sentinel )) &&
+	    if (this.previous[node] != EDGE)
+		this.next[this.previous[node]] = successor;
 £>if (( with_head )); then
-	if (this.head == node)
-	    this.head = successor;
+	    if (this.head == node)
+		this.head = successor;
 £>fi
+	}
 	return unuse(node);
     }
     
@@ -412,12 +470,14 @@ public class £{name}<T>
      */
     public void remove(int node)
     {
+£>(( 1 - with_sentinel )) &&
 	if (this.previous[node] != EDGE)
 	    this.next[this.previous[node]] = this.next[node];
 £>if (( with_head )); then
 	else
 	    this.head = this.next[node];
 £>fi
+£>(( 1 - with_sentinel )) &&
 	if (this.next[node] != EDGE)
 	    this.previous[this.next[node]] = this.previous[node];
 £>if (( with_tail )); then
@@ -429,7 +489,7 @@ public class £{name}<T>
 £>fi
     
     
-£>if (( with_tail )); then
+£>if (( with_tail )) || (( with_sentinel * with_prev )); then
     /**
      * Insert a value in the end of the list.
      * This methods has constant amortised time complexity.
@@ -438,6 +498,11 @@ public class £{name}<T>
      * @return         The node that has been created and inserted
      */
     public int insertEnd(T value)
+£>if (( with_sentinel )); then
+    {
+	return insertBefore(value, this.edge);
+    }
+£>else
     {
 	if (this.tail == EDGE)
 £>(( with_head )) &&
@@ -446,6 +511,7 @@ public class £{name}<T>
 	    return this.values[this.tail = getNext()] = value;
 	return insertAfter(value, this.tail);
     }
+£>fi
     
 £>if (( with_prev )); then
     /**
@@ -455,12 +521,18 @@ public class £{name}<T>
      * @return  The node that has been removed
      */
     public int removeEnd()
+£>if (( with_sentinel )); then
+    {
+	return removeBefore(this.edge);
+    }
+£>else
     {
 	int node = this.tail;
 	if (node != EDGE)
 	    this.next[this.tail = this.previous[node]] = EDGE;
 	return unuse(node);
     }
+£>fi
 £>fi
 £>fi
     

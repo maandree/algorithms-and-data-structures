@@ -164,16 +164,18 @@
     public Node removeAfter(Node predecessor)
     {
 	Node node = predecessor.next;
-	if (node == null)
+	if (node != null)
+	{
 	    predecessor.next = node.next;
 £>if (( with_prev )); then
-	else if (node.next != null)
-	    node.next.previous = predecessor;
+	    if (node.next != null)
+		node.next.previous = predecessor;
 £>fi
 £>if (( with_tail )); then
-	if (this.tail == node)
-	    this.tail = predecessor;
+	    if (this.tail == node)
+		this.tail = predecessor;
 £>fi
+	}
 	return node;
     }
 
@@ -209,14 +211,16 @@
     public Node removeBefore(Node successor)
     {
 	Node node = successor.previous;
-	if (node == null)
+	if (node != null)
+	{
 	    successor.previous = node.previous;
-	else if (node.previous != null)
-	    node.previous.next = successor;
+	    if (node.previous != null)
+		node.previous.next = successor;
 £>if (( with_head )); then
-	if (this.head == node)
-	    this.head = successor;
+	    if (this.head == node)
+		this.head = successor;
 £>fi
+	}
 	return node;
     }
     
