@@ -65,6 +65,7 @@
      * Initialiser
      */
     {
+	this.edge = new Node(null);
 	this.edge.next = this.edge;
 £>if (( with_prev )); then
 	this.edge.previous = this.edge;
