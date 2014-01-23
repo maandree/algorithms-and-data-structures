@@ -15,8 +15,50 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+£<
+  EDGE=EDGE ; (( with_sentinel )) && EDGE=edge
+  null=null ; (( array )) && null=EDGE
+  Node=Node ; (( array )) && Node=int
+  
+  circular=0
+  if (( with_sentinel )) || (( (1 - with_head) * (1 - with_tail) )); then
+      circular=1
+  fi
+  
+  function next
+  {
+      (( array )) && echo "this.next[${1}]"
+      (( array )) || echo "${1}.next"
+  }
+  function previous
+  {
+      (( array )) && echo "this.previous[${1}]"
+      (( array )) || echo "${1}.previous"
+  }
+  function free
+  {
+      (( array )) && echo "unuse(${1})"
+      (( array )) || echo "${1}"
+  }
+£>
+£>if (( 1 - array )); then
+£>    function new
+£>    {
+	£{Node} £{1} = new Node(£{2});
+£>    }
+£>else
+£>    function new
+£>    {
+	£{Node} £{1} = getNext();
+	this.values[£{1}] = £{2};
+£>    }
+£>fi
+
+
+
 public class £{name}<T>
 {
+£>if (( 1 - array )); then
     /**
      * Node for the list
      */
@@ -54,79 +96,303 @@ public class £{name}<T>
     }
     
     
+    
+£>else
+    /**
+     * The default initial capacity
+     */
+    private static final int DEFAULT_INITIAL_CAPACITY = 128;
+    
+£>if (( 1 - with_sentinel )); then
+    /**
+     * Sentinel value indicating that an edge has been reached
+     */
+    public static final int EDGE = -1;
+£>fi
+    
+    /**
+     * Sentinel value indicating that the position is unused
+     */
+    public static final int UNUSED = -2;
+    
+    
+    
+    /**
+     * Constructor
+     */
+    public £{name}()
+    {
+	this(DEFAULT_INITIAL_CAPACITY);
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param  initialCapacity  The initial size of the arrays
+     */
+    @SuppressWarnings("unchecked")
+    public £{name}(int initialCapacity)
+    {
+	/* Most be a power of 2 */
+	if ((initialCapacity & initialCapacity - 1) != 0)
+	{
+	    initialCapacity |= initialCapacity >> 1;
+	    initialCapacity |= initialCapacity >> 2;
+	    initialCapacity |= initialCapacity >> 4;
+	    initialCapacity |= initialCapacity >> 8;
+	    initialCapacity |= initialCapacity >> 16;
+	    initialCapacity++;
+	}
+	
+	this.capacity = initialCapacity;
+	this.next = new int[initialCapacity];
+£>(( with_prev )) &&
+	this.previous = new int[initialCapacity];
+	this.reusable = new int[initialCapacity];
+	this.values = (T[])(new Object[initialCapacity]);
+    }
+    
+    
+    
+    /**
+     * The size of the arrays
+     */
+    private int capacity;
+    
+    /**
+     * The index after the last used index in
+     * {@link #values} and {@link #next}
+     */
+    public int end = 0;
+    
+    /**
+     * Head of the stack of reusable positions
+     */
+    private int reuseHead = 0;
+    
+    /**
+     * Stack of indices than are no longer in use
+     */
+    private int[] reusable;
+    
+    /**
+     * The value stored in each node
+     */
+    public T[] values;
+    
+    /**
+     * The next node for each node, {@link #£{EDGE}}
+     * if the current node is the last node, and
+     * {@link #UNUSED} if there is no node on this
+     * position
+     */
+    public int[] next;
+    
+£>if (( with_prev )); then
+    /**
+     * The previou node for each node, {@link #£{EDGE}}
+     * if the current node is the first node, and
+     * {@link #UNUSED} if there is no node on this
+     * position
+     */
+    public int[] previous;
+£>fi
+£>fi
+    
 £>if (( with_sentinel )); then
     /**
      * The sentinel node in the list
      */
-    public Node edge;
+    public £{Node} edge;
+    
+    
+    
+    /**
+     * Initialiser
+     */
+    {
+£>(( array )) ||
+	this.edge = new Node(null);
+£>(( array )) &&
+	this.values[this.edge = getNext()] = null;
+	£(next this.edge) = this.edge;
+£>(( with_prev )) &&
+	£(previous this.edge) = this.edge;
+    }
 £>fi
     
 £>if (( with_head )); then
     /**
      * The first node in the list
      */
-    public Node head = null;
+    public £{Node} head = £{null};
 £>fi
     
 £>if (( with_tail )); then
     /**
      * The last node in the list
      */
-    public Node tail = null;
+    public £{Node} tail = £{null};
 £>fi
     
     
     
-£>if (( with_sentinel )); then
+£>if (( array )); then    
     /**
-     * Initialiser
+     * Pack the list so that there are no reusable
+     * positions, and reduce the capacity to the
+     * smallest capacity that can be used. Not that
+     * values (nodes) returned by the list's methods
+     * will become invalid. Additionally (to reduce
+     * the complexity) the list will be defragment
+     * so that the nodes' indices are continuous.
+     * This method has linear time complexity and
+     * linear memory complexity.
      */
+    public void pack()
     {
-	this.edge = new Node(null);
-	this.edge.next = this.edge;
+	int size = this.end - reuseHead;
+	int cap = size;
+	if ((cap & cap - 1) != 0)
+	{
+	    cap |= cap >> 1;
+	    cap |= cap >> 2;
+	    cap |= cap >> 4;
+	    cap |= cap >> 8;
+	    cap |= cap >> 16;
+	    cap++;
+	}
+	
+	@SuppressWarnings("unchecked")
+	T[] vals = (T[])(new Object[cap]);
+£>if (( 1 - with_head )); then
+	int head = 0;
+	while ((head < this.end) && (this.next[head] == UNUSED))
+	    head++;
+	if (head < this.end)
+	    for (int ptr = 0, node = head; (node != head) || (ptr == 0);)
+£>elif (( with_sentinel )); then
+	for (int ptr = 0, node = this.edge; (node != this.edge) || (ptr == 0);)
+£>else
+	for (int ptr = 0, node = this.head; node != EDGE;)
+£>fi
+	    {
+		vals[ptr++] = this.values[node];
+		node = this.next[node];
+	    }
+	
+	if (cap != this.capacity)
+	{
+	    this.reusable = new int[cap];
+	    this.next     = new int[cap];
 £>(( with_prev )) &&
-	this.edge.previous = this.edge;
+	    this.previous = new int[cap];
+	}
+	
+£>LAST=EDGE ; BEGINNING=0 ; (( circular )) && { LAST=0; BEGINNING=1; }
+	for (int i = 0; i < size;)
+	    this.next[i] = ++i;
+	this.next[size - 1] = £{LAST};
+	
+£>if (( with_prev )); then
+	for (int i = £{BEGINNING}; i < size; i++)
+	    this.previous[i] = i - 1;
+£>(( circular )) &&
+	this.previous[0] = size - 1;
+£>fi
+	
+	this.values = vals;
+	this.end = size;
+	this.reuseHead = 0;
+£>(( with_head )) &&
+	this.head = 0;
+£>(( with_tail )) &&
+	this.tail = this.end - 1;
     }
     
-£>elif (( 1 - with_head )) && (( 1 - with_tail )); then
+    
+    /**
+     * Gets the next free position, and grow the
+     * arrays if necessary. This methods has constant
+     * amortised time complexity.
+     * 
+     * @return  The next free position
+     */
+    @SuppressWarnings("unchecked")
+    private int getNext()
+    {
+	if (this.reuseHead > 0)
+	    return this.reusable[--this.reuseHead];
+	if (this.end == this.capacity)
+	{
+	    this.capacity <<= 1;
+	    System.arraycopy(this.values, 0, this.values = (T[])(new Object[this.capacity]), 0, this.end);
+	    System.arraycopy(this.reusable, 0, this.reusable = new int[this.capacity], 0, this.end);
+	    System.arraycopy(this.next,     0, this.next     = new int[this.capacity], 0, this.end);
+£>(( with_prev )) &&
+	    System.arraycopy(this.previous, 0, this.previous = new int[this.capacity], 0, this.end);
+	}
+	return this.end++;
+    }
+    
+    
+    /**
+     * Mark a position as unused
+     * 
+     * @param   node  The position
+     * @return        The position
+     */
+    private int unuse(int node)
+    {
+	this.reusable[reuseHead++] = node;
+	this.next[node] = UNUSED;
+£>(( with_prev )) &&
+	this.previous[node] = UNUSED;
+	return node;
+    }
+£>fi
+    
+    
+    
+£>if (( 1 - with_sentinel )) && (( 1 - with_head )) && (( 1 - with_tail )); then
     /**
      * Creates the initial node in a circularly linked list
      * 
      * @param   value  The value of the initial node
      * @return         The node that has been created and inserted
      */
-    public Node create(T value)
+    public £{Node} create(T value)
     {
-	Node node = new Node(value);
+£>new node value
 £>(( with_prev )) &&
-	node.previous = node;
-	return node.next = node;
+	£(previous node) = node;
+	return £(next node) = node;
     }
 £>fi
     
     
-£>if (( with_head )); then
+£>if (( with_head )) || (( with_sentinel )); then
     /**
      * Insert a value in the beginning of the list
      * 
      * @param   value  The value to insert
      * @return         The node that has been created and inserted
      */
-    public Node insertBeginning(T value)
+    public £{Node} insertBeginning(T value)
 £>if (( with_sentinel )); then
     {
 	return insertAfter(value, this.edge);
     }
 £>else
     {
-	Node node = new Node(value);
-	node.next = this.head;
+£>new node value
+	£(next node) = this.head;
 £>if (( with_prev )); then
-	if (node.next != null)
-	    node.next.previous = node;
+	if (£(next node) != £{null})
+	    £(previous "$(next node)") = node;
 £>fi
 £>if (( with_tail )); then
-	if (this.head == null)
+	if (this.head == £{null})
 	    this.tail = node;
 £>fi
 	this.head = node;
@@ -139,28 +405,29 @@ public class £{name}<T>
      * 
      * @return  The node that has been removed
      */
-    public Node removeBeginning()
+    public £{Node} removeBeginning()
 £>if (( with_sentinel )); then
     {
 	return removeAfter(this.edge);
     }
 £>else
     {
-	Node node = this.head;
-	if (node != null)
-	    this.head = this.head.next;
+	£{Node} node = this.head;
+	if (node != £{null})
+	    this.head = £(next this.head);
 £>if (( with_prev )); then
-	if (this.head != null)
-	    this.head.previous = null;
+	if (this.head != £{null})
+	    £(previous this.head) = £{null};
 £>fi
 £>if (( with_tail )); then
 	if (this.tail == node)
-	    this.tail = null;
+	    this.tail = £{null};
 £>fi
-	return node;
+	return £(free node);
     }
 £>fi
 £>fi
+    
     
     /**
      * Insert a value after a specified, reference, node
@@ -169,16 +436,16 @@ public class £{name}<T>
      * @param   predecessor  The reference node
      * @return               The node that has been created and inserted
      */
-    public Node insertAfter(T value, Node predecessor)
+    public £{Node} insertAfter(T value, £{Node} predecessor)
     {
-	Node node = new Node(value);
-	node.next = predecessor.next;
-	predecessor.next = node;
+£>new node value
+	£(next node) = £(next predecessor);
+	£(next predecessor) = node;
 £>if (( with_prev )); then
-	node.previous = predecessor;
+	£(previous node) = predecessor;
 £>(( with_sentinel )) ||
-	if (node.next != null)
-	    node.next.previous = node;
+	if (£(next node) != £{null})
+	    £(previous "$(next node)") = node;
 £>fi
 £>if (( with_tail )); then
 	if (this.tail == predecessor)
@@ -193,25 +460,26 @@ public class £{name}<T>
      * @param   predecessor  The reference node
      * @return               The node that has been removed
      */
-    public Node removeAfter(Node predecessor)
+    public £{Node} removeAfter(£{Node} predecessor)
     {
-	Node node = predecessor.next;
+	£{Node} node = £(next predecessor);
 £>(( with_sentinel )) ||
-	if (node != null)
+	if (node != £{null})
 	{
-	    predecessor.next = node.next;
+	    £(next predecessor) = £(next node);
 £>if (( with_prev )); then
 £>(( with_sentinel )) ||
-	    if (node.next != null)
-		node.next.previous = predecessor;
+	    if (£(next node) != £{null})
+		£(previous "$(next node)") = predecessor;
 £>fi
 £>if (( with_tail )); then
 	    if (this.tail == node)
 		this.tail = predecessor;
 £>fi
 	}
-	return node;
+	return £(free node);
     }
+    
     
 £>if (( with_prev )); then
     /**
@@ -221,15 +489,15 @@ public class £{name}<T>
      * @param   successor  The reference node
      * @return             The node that has been created and inserted
      */
-    public Node insertBefore(T value, Node successor)
+    public £{Node} insertBefore(T value, £{Node} successor)
     {
-	Node node = new Node(value);
-	node.previous = successor.previous;
-	successor.previous = node;
-	node.next = successor;
+£>new node value
+	£(previous node) = £(previous successor);
+	£(previous successor) = node;
+	£(next node) = successor;
 £>(( with_sentinel )) ||
-	if (node.previous != null)
-	    node.previous.next = node;
+	if (£(previous node) != £{null})
+	    £(next "$(previous node)") = node;
 £>if (( with_head )); then
 	if (this.head == successor)
 	    this.head = node;
@@ -243,88 +511,95 @@ public class £{name}<T>
      * @param   successor  The reference node
      * @return             The node that has been removed
      */
-    public Node removeBefore(Node successor)
+    public £{Node} removeBefore(£{Node} successor)
     {
-	Node node = successor.previous;
+	£{Node} node = £(previous successor);
 £>(( with_sentinel )) ||
-	if (node != null)
+	if (node != £{null})
 	{
-	    successor.previous = node.previous;
+	    £(previous successor) = £(previous node);
 £>(( with_sentinel )) ||
-	    if (node.previous != null)
-		node.previous.next = successor;
+	    if (£(previous node) != £{null})
+		£(next "$(previous node)") = successor;
 £>if (( with_head )); then
 	    if (this.head == node)
 		this.head = successor;
 £>fi
 	}
-	return node;
+	return £(free node);
     }
+    
     
     /**
      * Remove the node from the list
      * 
      * @param  node  The node to remove
      */
-    public void remove(Node node)
+    public void remove(£{Node} node)
     {
 £>(( with_sentinel )) ||
-	if (node.previous != null)
-	    node.previous.next = node.next;
+	if (£(previous node) != £{null})
+	    £(next "$(previous node)") = £(next node);
 £>if (( with_head )); then
 	else
-	    this.head = node.next;
+	    this.head = £(next node);
 £>fi
+	
 £>(( with_sentinel )) ||
-	if (node.next != null)
-	    node.next.previous = node.previous;
+	if (£(next node) != £{null})
+	    £(previous "$(next node)") = £(previous node);
 £>if (( with_tail )); then
 	else
-	    this.tail = node.previous;
+	    this.tail = £(previous node);
 £>fi
+£>(( array )) &&
+	unuse(node);
     }
 £>fi
     
-£>if (( with_tail )); then
+    
+£>if (( with_tail )) || (( with_sentinel * with_prev )); then
     /**
      * Insert a value in the end of the list
      * 
      * @param   value  The value to insert
      * @return         The node that has been created and inserted
      */
-    public Node insertEnd(T value)
+    public £{Node} insertEnd(T value)
 £>if (( with_sentinel )); then
     {
 	return insertBefore(value, this.edge);
     }
 £>else
     {
-	if (this.tail == null)
+	if (this.tail == £{null})
 £>(( with_head )) &&
 	    return insertBeginning(value);
-£>(( with_head )) ||
-	    return this.tail = new Node(value);
+£>(( 1 - with_head )) && (( 1 - array )) &&
+	    return this.tail = new £{Node}(value);
+£>(( 1 - with_head )) && (( array )) &&
+	    return this.values[this.tail = getNext()] = value;
 	return insertAfter(value, this.tail);
     }
 £>fi
-
+    
 £>if (( with_prev )); then
     /**
      * Remove the node at the end of the list
      * 
      * @return  The node that has been removed
      */
-    public Node removeEnd()
+    public £{Node} removeEnd()
 £>if (( with_sentinel )); then
     {
 	return removeBefore(this.edge);
     }
 £>else
     {
-	Node node = this.tail;
-	if (node != null)
-	    (this.tail = node.previous).next = null;
-	return node;
+	£{Node} node = this.tail;
+	if (node != £{null})
+	    £(next "(this.tail = $(previous node))") = £{null};
+	return £(free node);
     }
 £>fi
 £>fi
