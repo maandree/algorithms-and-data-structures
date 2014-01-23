@@ -20,7 +20,7 @@ obj/%.java: src/%.java $(foreach F, $(PP), src/$(F))
 	env GPP="$(GPP)" $(GPP) -s £ < "$<" > "$@"
 
 
-$(OBJ_LINKED_LISTS): src/datastructures/linkedlists/template
+$(OBJ_LINKED_LISTS): src/datastructures/linkedlists/template src/datastructures/linkedlists/sentinel-template
 obj/algorithms/searching/MultiinterpolationSearch.class: obj/algorithms/searching/InterpolationSearch.class
 obj/algorithms/searching/MultibinarySearch.class: obj/algorithms/searching/BinarySearch.class
 

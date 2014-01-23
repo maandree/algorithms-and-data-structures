@@ -1,0 +1,198 @@
+/* -*- java -*- */
+/**
+ * Copyright © 2014  Mattias Andrée (maandree@member.fsf.org)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+{
+    /**
+     * Node for the list
+     */
+    public class Node
+    {
+	/**
+	 * Constructor
+	 * 
+	 * @param  value  The value to store in the list
+	 */
+	public Node(T value)
+	{
+	    this.value = value;
+	}
+	
+	
+	
+	/**
+	 * The value stored in the list by this node
+	 */
+	public T value;
+	
+	/**
+	 * The next node in the list
+	 */
+	public Node next = null;
+	
+£>if (( with_prev )); then
+	/**
+	 * The previous node in the list
+	 */
+	public Node previous = null;
+£>fi
+	
+    }
+    
+    
+    
+    /**
+     * The sentinel node in the list
+     */
+    public Node edge;
+    
+    
+    
+    /**
+     * Initialiser
+     */
+    {
+	this.edge.next = this.edge;
+£>if (( with_prev )); then
+	this.edge.previous = this.edge;
+£>fi
+    }
+    
+    
+    
+    /**
+     * Insert a value in the beginning of the list
+     * 
+     * @param   value  The value to insert
+     * @return         The node that has been created and inserted
+     */
+    public Node insertBeginning(T value)
+    {
+	return insertAfter(value, this.edge);
+    }
+    
+    /**
+     * Remove the node at the beginning of the list
+     * 
+     * @return  The node that has been removed
+     */
+    public Node removeBeginning()
+    {
+	return removeAfter(this.edge);
+    }
+    
+    /**
+     * Insert a value after a specified, reference, node
+     * 
+     * @param   value        The value to insert
+     * @param   predecessor  The reference node
+     * @return               The node that has been created and inserted
+     */
+    public Node insertAfter(T value, Node predecessor)
+    {
+	Node node = new Node(value);
+	node.next = predecessor.next;
+	predecessor.next = node;
+£>if (( with_prev )); then
+	node.previous = predecessor;
+	node.next.previous = node;
+£>fi
+	return node;
+    }
+    
+    /**
+     * Remove the node after a specified, reference, node
+     * 
+     * @param   predecessor  The reference node
+     * @return               The node that has been removed
+     */
+    public Node removeAfter(Node predecessor)
+    {
+	Node node = predecessor.next;
+	predecessor.next = node.next;
+£>if (( with_prev )); then
+	predecessor.next.previous = predecessor;
+£>fi
+	return node;
+    }
+    
+£>if (( with_prev )); then
+    /**
+     * Insert a value before a specified, reference, node
+     * 
+     * @param   value      The value to insert
+     * @param   successor  The reference node
+     * @return             The node that has been created and inserted
+     */
+    public Node insertBefore(T value, Node successor)
+    {
+	Node node = new Node(value);
+	node.previous = successor.previous;
+	successor.previous = node;
+	node.next = successor;
+	node.previous.next = node;
+	return node;
+    }
+    
+    /**
+     * Remove the node before a specified, reference, node
+     * 
+     * @param   successor  The reference node
+     * @return             The node that has been removed
+     */
+    public Node removeBefore(Node successor)
+    {
+	Node node = successor.previous;
+	successor.previous = node.previous;
+	successor.previous.next = successor;
+	return node;
+    }
+    
+    /**
+     * Remove the node from the list
+     * 
+     * @param  node  The node to remove
+     */
+    public void remove(Node node)
+    {
+	node.previous.next = node.next;
+	node.next.previous = node.previous;
+    }
+    
+    /**
+     * Insert a value in the end of the list
+     * 
+     * @param   value  The value to insert
+     * @return         The node that has been created and inserted
+     */
+    public Node insertEnd(T value)
+    {
+	return insertBefore(value, this.edge);
+    }
+    
+    /**
+     * Remove the node at the end of the list
+     * 
+     * @return  The node that has been removed
+     */
+    public Node removeEnd()
+    {
+	return removeEnd(this.edge);
+    }
+£>fi
+    
+}
+
