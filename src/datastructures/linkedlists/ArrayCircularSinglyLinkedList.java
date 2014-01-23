@@ -27,5 +27,5 @@ package datastructures.linkedlists;
  * @param  <T>  The value stored in the structure
  */
 £>export name=ArrayCircularSinglyLinkedList with_sentinel=0 with_head=0 with_tail=0 with_prev=0
-£>$GPP -s £ < src/datastructures/linkedlists/array-template | sed -e '/^[/ ]\*/d'
+£>$GPP -s £ < src/datastructures/linkedlists/array-template | sed -e '/^[/ ]\*/d' -e '/^$/d'
 

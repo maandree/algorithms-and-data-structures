@@ -34,7 +34,6 @@ package datastructures.linkedlists;
  * 
  * @param  <T>  The value stored in the structure
  */
-public class TaillessDoublyLinkedList<T>
-£>export with_head=1 with_tail=0 with_prev=1
-£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
+£>export name=TaillessDoublyLinkedList with_sentinel=0 with_head=1 with_tail=0 with_prev=1
+£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d' -e '/^$/d'
 

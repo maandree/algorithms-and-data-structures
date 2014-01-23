@@ -43,7 +43,6 @@ package datastructures.linkedlists;
  * 
  * @param  <T>  The value stored in the structure
  */
-public class HeadlessSinglyLinkedList<T>
-£>export with_head=0 with_tail=1 with_prev=0
-£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
+£>export name=HeadlessSinglyLinkedList with_sentinel=0 with_head=0 with_tail=1 with_prev=0
+£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d' -e '/^$/d'
 

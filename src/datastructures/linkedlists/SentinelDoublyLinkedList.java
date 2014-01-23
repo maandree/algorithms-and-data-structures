@@ -44,7 +44,6 @@ package datastructures.linkedlists;
  * 
  * @param  <T>  The value stored in the structure
  */
-public class SentinelDoublyLinkedList<T>
-£>export with_prev=1
-£>$GPP -s £ < src/datastructures/linkedlists/sentinel-template | sed -e '/^[/ ]\*/d'
+£>export name=SentinelDoublyLinkedList with_sentinel=1 with_head=0 with_tail=0 with_prev=1
+£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d' -e '/^$/d'
 

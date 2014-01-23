@@ -36,7 +36,6 @@ package datastructures.linkedlists;
  * 
  * @param  <T>  The value stored in the structure
  */
-public class CircularDoublyLinkedList<T>
-£>export with_head=0 with_tail=0 with_prev=1
-£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d'
+£>export name=CircularDoublyLinkedList with_sentinel=0 with_head=0 with_tail=0 with_prev=1
+£>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d' -e '/^$/d'
 

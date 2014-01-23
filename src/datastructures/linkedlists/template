@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+public class £{name}<T>
 {
     /**
      * Node for the list
@@ -53,6 +54,12 @@
     }
     
     
+£>if (( with_sentinel )); then
+    /**
+     * The sentinel node in the list
+     */
+    public Node edge;
+£>fi
     
 £>if (( with_head )); then
     /**
@@ -69,8 +76,19 @@
 £>fi
     
     
-
-£>if (( 1 - with_head )) && (( 1 - with_tail )); then
+    
+£>if (( with_sentinel )); then
+    /**
+     * Initialiser
+     */
+    {
+	this.edge = new Node(null);
+	this.edge.next = this.edge;
+£>(( with_prev )) &&
+	this.edge.previous = this.edge;
+    }
+    
+£>elif (( 1 - with_head )) && (( 1 - with_tail )); then
     /**
      * Creates the initial node in a circularly linked list
      * 
@@ -86,6 +104,7 @@
     }
 £>fi
     
+    
 £>if (( with_head )); then
     /**
      * Insert a value in the beginning of the list
@@ -94,6 +113,11 @@
      * @return         The node that has been created and inserted
      */
     public Node insertBeginning(T value)
+£>if (( with_sentinel )); then
+    {
+	return insertAfter(value, this.edge);
+    }
+£>else
     {
 	Node node = new Node(value);
 	node.next = this.head;
@@ -108,6 +132,7 @@
 	this.head = node;
 	return node;
     }
+£>fi
     
     /**
      * Remove the node at the beginning of the list
@@ -115,6 +140,11 @@
      * @return  The node that has been removed
      */
     public Node removeBeginning()
+£>if (( with_sentinel )); then
+    {
+	return removeAfter(this.edge);
+    }
+£>else
     {
 	Node node = this.head;
 	if (node != null)
@@ -129,6 +159,7 @@
 £>fi
 	return node;
     }
+£>fi
 £>fi
     
     /**
@@ -145,6 +176,7 @@
 	predecessor.next = node;
 £>if (( with_prev )); then
 	node.previous = predecessor;
+£>(( with_sentinel )) ||
 	if (node.next != null)
 	    node.next.previous = node;
 £>fi
@@ -164,10 +196,12 @@
     public Node removeAfter(Node predecessor)
     {
 	Node node = predecessor.next;
+£>(( with_sentinel )) ||
 	if (node != null)
 	{
 	    predecessor.next = node.next;
 £>if (( with_prev )); then
+£>(( with_sentinel )) ||
 	    if (node.next != null)
 		node.next.previous = predecessor;
 £>fi
@@ -178,7 +212,7 @@
 	}
 	return node;
     }
-
+    
 £>if (( with_prev )); then
     /**
      * Insert a value before a specified, reference, node
@@ -193,6 +227,7 @@
 	node.previous = successor.previous;
 	successor.previous = node;
 	node.next = successor;
+£>(( with_sentinel )) ||
 	if (node.previous != null)
 	    node.previous.next = node;
 £>if (( with_head )); then
@@ -211,9 +246,11 @@
     public Node removeBefore(Node successor)
     {
 	Node node = successor.previous;
+£>(( with_sentinel )) ||
 	if (node != null)
 	{
 	    successor.previous = node.previous;
+£>(( with_sentinel )) ||
 	    if (node.previous != null)
 		node.previous.next = successor;
 £>if (( with_head )); then
@@ -231,12 +268,14 @@
      */
     public void remove(Node node)
     {
+£>(( with_sentinel )) ||
 	if (node.previous != null)
 	    node.previous.next = node.next;
 £>if (( with_head )); then
 	else
 	    this.head = node.next;
 £>fi
+£>(( with_sentinel )) ||
 	if (node.next != null)
 	    node.next.previous = node.previous;
 £>if (( with_tail )); then
@@ -254,6 +293,11 @@
      * @return         The node that has been created and inserted
      */
     public Node insertEnd(T value)
+£>if (( with_sentinel )); then
+    {
+	return insertBefore(value, this.edge);
+    }
+£>else
     {
 	if (this.tail == null)
 £>(( with_head )) &&
@@ -262,6 +306,7 @@
 	    return this.tail = new Node(value);
 	return insertAfter(value, this.tail);
     }
+£>fi
 
 £>if (( with_prev )); then
     /**
@@ -270,12 +315,18 @@
      * @return  The node that has been removed
      */
     public Node removeEnd()
+£>if (( with_sentinel )); then
+    {
+	return removeBefore(this.edge);
+    }
+£>else
     {
 	Node node = this.tail;
 	if (node != null)
 	    (this.tail = node.previous).next = null;
 	return node;
     }
+£>fi
 £>fi
 £>fi
     
