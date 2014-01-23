@@ -67,9 +67,8 @@
     {
 	this.edge = new Node(null);
 	this.edge.next = this.edge;
-£>if (( with_prev )); then
+(( with_prev )) &&
 	this.edge.previous = this.edge;
-£>fi
     }
     
     
