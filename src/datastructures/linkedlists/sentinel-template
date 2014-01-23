@@ -190,7 +190,7 @@
      */
     public Node removeEnd()
     {
-	return removeEnd(this.edge);
+	return removeBefore(this.edge);
     }
 £>fi
     
