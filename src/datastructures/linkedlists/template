@@ -232,7 +232,7 @@
 £>if (( with_head )); then
 	else
 	    this.head = node.next;
-£>fi	
+£>fi
 	if (node.next != null)
 	    node.next.previous = node.previous;
 £>if (( with_tail )); then
