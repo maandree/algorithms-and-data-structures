@@ -29,6 +29,6 @@ package datastructures.linkedlists;
  * 
  * @param  <T>  The value stored in the structure
  */
-£>export name=ArrayDoublyLinkedList array=1 with_sentinel=0 with_head=1 with_tail=1 with_prev=1
+£>export name=ArrayDoublyLinkedList array=1 with_sentinel=0 with_head=1 with_tail=1 with_prev=1 with_xor=0
 £>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d' -e '/^$/d'
 

@@ -18,21 +18,20 @@ package datastructures.linkedlists;
 
 
 /**
- * Array sentinel doubly linked list class. An array
- * linked list is a linked list constructed by parallel
- * arrays. A sentinel linked list is a linear linked
- * listed constructed as a circular linked listed with
- * a sentinel (dummy) node between the first node and
- * the last node. In this implementation, when a node
- * is removed the value stored that that position is
- * not removed before that position is reused. Insertion
- * methods have constant amortised time complexity,
- * and constant amortised memory complexity, removal
- * methods have constant time complexity and constant
- * memory complexity.
+ * Array XOR doubly linked list class. An array linked
+ * list is a linked list constructed by parallel arrays.
+ * In an XOR doubly linked list each node as a reference
+ * that is the bitwise exclusive-or or the address to
+ * both the next and the previous node. In this
+ * implementation, when a node is removed the value
+ * stored that that position is not removed before that
+ * position is reused. Insertion methods have constant
+ * amortised time complexity, and constant amortised
+ * memory complexity, removal methods have constant time
+ * complexity and constant memory complexity.
  * 
  * @param  <T>  The value stored in the structure
  */
-£>export name=ArraySentinelDoublyLinkedList array=1 with_sentinel=1 with_head=0 with_tail=0 with_prev=1 with_xor=0
+£>export name=ArrayXORDoublyLinkedList array=1 with_sentinel=0 with_head=1 with_tail=1 with_prev=1 with_xor=1
 £>$GPP -s £ < src/datastructures/linkedlists/template | sed -e '/^[/ ]\*/d' -e '/^$/d'
 
