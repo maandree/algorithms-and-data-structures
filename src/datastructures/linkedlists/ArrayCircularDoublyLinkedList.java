@@ -22,7 +22,11 @@ package datastructures.linkedlists;
  * linked list is a linked list constructed by parallel
  * arrays. In this implementation, when a node is
  * removed the value stored that that position is not
- * removed before that position is reused.
+ * removed before that position is reused. Insertion
+ * methods have constant amortised time complexity,
+ * and constant amortised memory complexity, removal
+ * methods have constant time complexity and constant
+ * memory complexity.
  * 
  * @param  <T>  The value stored in the structure
  */
