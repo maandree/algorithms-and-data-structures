@@ -19,7 +19,7 @@
   EDGE=EDGE ; (( with_sentinel )) && EDGE=edge
   null=null ; (( array )) && null=EDGE
   Node=Node ; (( array )) && Node=int
-  mirror=0
+  mirror=0 with_next=1 with_previous=${with_prev}
   
   circular=0
   if (( with_sentinel )) || (( (1 - with_head) * (1 - with_tail) )); then
@@ -27,23 +27,37 @@
   fi
   
   function xor
-  {
-      echo "this.next_previous[${1}]"
+  {   echo "this.next_previous[${1}]"
+  }
+  function next_previous
+  {   xor "$@"
   }
   function next
-  {
-      (( array )) && echo "this.next[${1}]"
-      (( array )) || echo "${1}.next"
+  {   (( array )) && echo "this.next[${1}]" || echo "${1}.next"
+  }
+  function set-head-next
+  {   (( with_xor )) && echo "$(xor "${1}") = (${2} ^ ${null})" || echo "$(next "${1}") = ${2}"
+  }
+  function get-head-next
+  {   (( with_xor )) && echo "($(xor "${1}") ^ ${null})" || echo "$(next "${1}")"
+  }
+  function set-next
+  {   (( with_xor )) && echo "$(xor "${1}") ^= (${2} ^ ${3})" || echo "$(next "${1}") = ${2}"
   }
   function previous
-  {
-      (( array )) && echo "this.previous[${1}]"
-      (( array )) || echo "${1}.previous"
+  {   (( array )) && echo "this.previous[${1}]" || echo "${1}.previous"
+  }
+  function get-tail-previous
+  {   (( with_xor )) && echo "($(xor "${1}") ^ ${null})" || echo "$(previous "${1}")"
+  }
+  function set-previous
+  {   (( with_xor )) && echo "$(xor "${1}") ^= (${2} ^ ${3})" || echo "$(previous "${1}") = ${2}"
   }
   function free
-  {
-      (( array )) && echo "unuse(${1})"
-      (( array )) || echo "${1}"
+  {   (( array )) && echo "unuse(${1})" || echo "${1}"
+  }
+  function singularity
+  {   (( with_xor )) && echo "${mirror}" || echo "${1}"
   }
   
   refs=""
@@ -231,13 +245,9 @@ public class £{name}<T>
     {
 £>new node null
 	this.edge = node;
-£>if (( with_xor )); then
-	£(xor this.edge) = £{mirror};
-£>else
-	£(next this.edge) = this.edge;
-£>(( with_prev )) &&
-	£(previous this.edge) = this.edge;
-£>fi
+£>for var in $refs; do
+	£($var this.edge) = £(singularity this.edge);
+£>done
     }
 £>fi
     
@@ -389,12 +399,10 @@ public class £{name}<T>
     public £{Node} create(T value)
     {
 £>new node value
-£>(( with_prev )) && (( 1 - with_xor)) &&
-	£(previous node) = node;
-£>(( with_xor )) &&
-	return £(xor node) = £{mirror};
-£>(( with_xor )) ||
-	return £(next node) = node;
+£>for var in $refs; do
+	£($var node) = £(singularity node);
+£>done
+	return node;
     }
 £>fi
     
@@ -407,22 +415,17 @@ public class £{name}<T>
      * @return         The node that has been created and inserted
      */
     public £{Node} insertBeginning(T value)
+    {
 £>if (( with_sentinel )); then
-    {
 	return insertAfter(value, this.edge);
-    }
 £>else
-    {
 £>new node value
+	£(set-head-next node this.head);
 £>if (( with_xor )); then
-	£(xor node) = £{null} ^ this.head;
-	£(xor this.head) ^= £{null} ^ node;
-£>else
-	£(next node) = this.head;
-£>if (( with_prev )); then
+	£(set-previous this.head "${null}" node);
+£>elif (( with_prev )); then
 	if (£(next node) != £{null})
 	    £(previous "$(next node)") = node;
-£>fi
 £>fi
 £>if (( with_tail )); then
 	if (this.head == £{null})
@@ -430,8 +433,8 @@ public class £{name}<T>
 £>fi
 	this.head = node;
 	return node;
-    }
 £>fi
+    }
     
     /**
      * Remove the node at the beginning of the list
@@ -439,38 +442,68 @@ public class £{name}<T>
      * @return  The node that has been removed
      */
     public £{Node} removeBeginning()
+    {
 £>if (( with_sentinel )); then
-    {
 	return removeAfter(this.edge);
-    }
 £>else
-    {
 	£{Node} node = this.head;
 	if (node != £{null})
-£>if (( with_xor )); then
 	{
-	    this.head = £(xor node) ^ £{null};
-	    if (this.head != £{null})
-		£(xor this.head) ^= £{null} ^ node;
-	}
-£>else
-	    this.head = £(next node);
+	    this.head = £(get-head-next node);
 £>if (( with_prev )); then
-	if (this.head != £{null})
-	    £(previous this.head) = £{null};
-£>fi
+	    if (this.head != £{null})
+		£(set-previous this.head "${null}" node);
 £>fi
 £>if (( with_tail )); then
-	if (this.tail == node)
-	    this.tail = £{null};
+	    if (this.tail == node)
+		this.tail = £{null};
 £>fi
+	}
 	return £(free node);
-    }
 £>fi
+    }
 £>fi
     
     
 £>if (( 1 - with_xor )); then
+£>function insertDirection
+£>{
+£>new node value
+	£(${2} node) = £(next ${1});
+	£(${2} ${1}) = node;
+£>if (( with_${3} )); then
+	£(${3} node) = £{1};
+£>(( with_sentinel )) ||
+	if (£(${2} node) != £{null})
+	    £(${3} "$(${2} node)") = node;
+£>fi
+£>if (( with_${4} )); then
+	if (this.£{4} == £{1})
+	    this.£{4} = node;
+£>fi
+	return node;
+£>}
+
+£>function removeDirection
+£>{
+	£{Node} node = £(${2} ${1});
+£>(( with_sentinel )) ||
+	if (node != £{null})
+	{
+	    £(${2} ${1}) = £(${2} node);
+£>if (( with_${3} )); then
+£>(( with_sentinel )) ||
+	    if (£(${2} node) != £{null})
+		£(${3} "$(${2} node)") = £{1};
+£>fi
+£>if (( with_${4} )); then
+	    if (this.£{4} == node)
+		this.£{4} = £{1};
+£>fi
+	}
+	return £(free node);
+£>}
+
     /**
      * Insert a value after a specified, reference, node
      * 
@@ -480,20 +513,7 @@ public class £{name}<T>
      */
     public £{Node} insertAfter(T value, £{Node} predecessor)
     {
-£>new node value
-	£(next node) = £(next predecessor);
-	£(next predecessor) = node;
-£>if (( with_prev )); then
-	£(previous node) = predecessor;
-£>(( with_sentinel )) ||
-	if (£(next node) != £{null})
-	    £(previous "$(next node)") = node;
-£>fi
-£>if (( with_tail )); then
-	if (this.tail == predecessor)
-	    this.tail = node;
-£>fi
-	return node;
+£>insertDirection predecessor next previous tail
     }
     
     /**
@@ -504,22 +524,7 @@ public class £{name}<T>
      */
     public £{Node} removeAfter(£{Node} predecessor)
     {
-	£{Node} node = £(next predecessor);
-£>(( with_sentinel )) ||
-	if (node != £{null})
-	{
-	    £(next predecessor) = £(next node);
-£>if (( with_prev )); then
-£>(( with_sentinel )) ||
-	    if (£(next node) != £{null})
-		£(previous "$(next node)") = predecessor;
-£>fi
-£>if (( with_tail )); then
-	    if (this.tail == node)
-		this.tail = predecessor;
-£>fi
-	}
-	return £(free node);
+£>removeDirection predecessor next previous tail
     }
     
     
@@ -533,18 +538,7 @@ public class £{name}<T>
      */
     public £{Node} insertBefore(T value, £{Node} successor)
     {
-£>new node value
-	£(previous node) = £(previous successor);
-	£(previous successor) = node;
-	£(next node) = successor;
-£>(( with_sentinel )) ||
-	if (£(previous node) != £{null})
-	    £(next "$(previous node)") = node;
-£>if (( with_head )); then
-	if (this.head == successor)
-	    this.head = node;
-£>fi
-	return node;
+£>insertDirection successor previous next head
     }
     
     /**
@@ -555,20 +549,7 @@ public class £{name}<T>
      */
     public £{Node} removeBefore(£{Node} successor)
     {
-	£{Node} node = £(previous successor);
-£>(( with_sentinel )) ||
-	if (node != £{null})
-	{
-	    £(previous successor) = £(previous node);
-£>(( with_sentinel )) ||
-	    if (£(previous node) != £{null})
-		£(next "$(previous node)") = successor;
-£>if (( with_head )); then
-	    if (this.head == node)
-		this.head = successor;
-£>fi
-	}
-	return £(free node);
+£>removeDirection successor previous next head
     }
     
     
@@ -579,21 +560,15 @@ public class £{name}<T>
      */
     public void remove(£{Node} node)
     {
+£>for x in "previous next head" "next previous tail"; do x=( $x )
 £>(( with_sentinel )) ||
-	if (£(previous node) != £{null})
-	    £(next "$(previous node)") = £(next node);
-£>if (( with_head )); then
+	if (£(${x[0]} node) != £{null})
+	    £(${x[1]} "$(${x[0]} node)") = £(${x[1]} node);
+£>if (( with_${x[2]} )); then
 	else
-	    this.head = £(next node);
+	    this.£{x[2]} = £(${x[1]} node);
 £>fi
-	
-£>(( with_sentinel )) ||
-	if (£(next node) != £{null})
-	    £(previous "$(next node)") = £(previous node);
-£>if (( with_tail )); then
-	else
-	    this.tail = £(previous node);
-£>fi
+£>done
 £>(( array )) &&
 	unuse(node);
     }
@@ -610,22 +585,22 @@ public class £{name}<T>
      * @return         The node that has been created and inserted
      */
     public £{Node} insertEnd(T value)
+    {
 £>if (( with_sentinel )); then
-    {
 	return insertBefore(value, this.edge);
-    }
 £>else
-    {
 	if (this.tail == £{null})
-£>(( with_head )) &&
+	{
+£>if (( with_head )); then
 	    return insertBeginning(value);
-£>(( 1 - with_head )) && (( 1 - array )) &&
-	    return this.tail = new £{Node}(value);
-£>(( 1 - with_head )) && (( array )) &&
-	    return this.values[this.tail = getNext()] = value;
-	return insertAfter(value, this.tail);
-    }
+£>else
+£>new node value
+	    return this.tail = node;
 £>fi
+	}
+	return insertAfter(value, this.tail);
+£>fi
+    }
 £>fi
     
 £>if (( with_prev )); then
@@ -635,25 +610,19 @@ public class £{name}<T>
      * @return  The node that has been removed
      */
     public £{Node} removeEnd()
+    {
 £>if (( with_sentinel )); then
-    {
 	return removeBefore(this.edge);
-    }
 £>else
-    {
 	£{Node} node = this.tail;
 	if (node != £{null})
-£>if (( with_xor )); then
 	{
-	    this.tail = £{null} ^ £(xor node);
-	    £(xor this.tail) ^= £{null} ^ node;
+	    this.tail = £(get-tail-previous node);
+	    £(set-next this.tail "${null}" node);
 	}
-£>else
-	    £(next "(this.tail = $(previous node))") = £{null};
-£>fi
 	return £(free node);
-    }
 £>fi
+    }
 £>fi
 £>fi
     
