@@ -22,7 +22,9 @@ package algorithms.bits;
  */
 public class Powers
 {
-£>for T in char byte short int long; do
+£<for T_S in char_2 byte_1 short_2 int_4 long_8; do
+  T=${T_S%_*}
+£>S=${T_S#*_}
     /**
      * Compute whether an integer is a power of two,
      * note that zero is indeed not a power of two
@@ -34,6 +36,50 @@ public class Powers
     {
 	return (value & (value - 1)) == 0; /* The left hand side clears the least significant bit set */
 	/* Or alternatively: (value & -value) == value */
+    }
+    
+    /**
+     * Computes the nearest, but higher, power of two,
+     * independently of whether the current value is
+     * a power of two or not
+     * 
+     * @param   value  The current value
+     * @return         The next power of two
+     */
+    public static £{T} nextPowerOf2(£{T} value)
+    {
+	value |= value >> 1;
+	value |= value >> 2;
+	value |= value >> 4;
+£>(( S > 1)) &&
+	value |= value >> 8;
+£>(( S > 2)) &&
+	value |= value >> 16;
+£>(( S > 4)) &&
+	value |= value >> 32;
+	return (£{T})(value + 1);
+    }
+    
+    /**
+     * Computes the nearest, but higher, power of two,
+     * but only if the current value is not a power of two
+     * 
+     * @param   value  The current value
+     * @return         The next power of two
+     */
+    public static £{T} toPowerOf2(£{T} value)
+    {
+	value -= 1;
+	value |= value >>> 1;
+	value |= value >>> 2;
+	value |= value >>> 4;
+£>(( S > 1)) &&
+	value |= value >>> 8;
+£>(( S > 2)) &&
+	value |= value >>> 16;
+£>(( S > 4)) &&
+	value |= value >>> 32;
+	return (£{T})(value + 1);
     }
 £>done
 }
