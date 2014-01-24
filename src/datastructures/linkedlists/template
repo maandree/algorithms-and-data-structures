@@ -230,7 +230,7 @@ public class £{name}<T>
      */
     {
 £>new node null
-	this.edge = mode;
+	this.edge = node;
 £>if (( with_xor )); then
 	£(xor this.edge) = £{mirror};
 £>else
