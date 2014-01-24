@@ -19,7 +19,7 @@ package datastructures.linkedlists;
 
 /**
  * Value type that can be stored in linked lists
- * to turn them in to association lists.
+ * to turn them into association lists.
  * 
  * @param  <K>  The type of the key of the node
  * @param  <V>  The type of the value associated with the key
