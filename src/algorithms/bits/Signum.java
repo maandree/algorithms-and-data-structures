@@ -108,7 +108,7 @@ public class Signum
     }
     
     /**
-     * Negates a value of a flag is set to 1
+     * Negates a value of a flag is set to 0
      * 
      * @param   value  The value
      * @param   flag   The flag, must be either 1 or 0
