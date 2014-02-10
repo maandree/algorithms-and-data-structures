@@ -275,15 +275,15 @@ public class Bits
     public static £{T} ones_parallel(£{T} value)
     {
 	£{T} rc = value;
-	rc = (£{T})(((rc >>  1) & (£{T})0xAAAAAAAAAAAAAAAAL) + (rc & (£{T})0xAAAAAAAAAAAAAAAAL));
-	rc = (£{T})(((rc >>  2) & (£{T})0xCCCCCCCCCCCCCCCCL) + (rc & (£{T})0xCCCCCCCCCCCCCCCCL));
-	rc = (£{T})(((rc >>  4) & (£{T})0xF0F0F0F0F0F0F0F0L) + (rc & (£{T})0xF0F0F0F0F0F0F0F0L));
+	rc = (£{T})(((rc >>  1) & (£{T})0x5555555555555555L) + (rc & (£{T})0x5555555555555555L));
+	rc = (£{T})(((rc >>  2) & (£{T})0x3333333333333333L) + (rc & (£{T})0x3333333333333333L));
+	rc = (£{T})(((rc >>  4) & (£{T})0x0F0F0F0F0F0F0F0FL) + (rc & (£{T})0x0F0F0F0F0F0F0F0FL));
 £>(( $S > 1 )) &&
-	rc = (£{T})(((rc >>  8) & (£{T})0xFF00FF00FF00FF00L) + (rc & (£{T})0xFF00FF00FF00FF00L));
+	rc = (£{T})(((rc >>  8) & (£{T})0x00FF00FF00FF00FFL) + (rc & (£{T})0x00FF00FF00FF00FFL));
 £>(( $S > 2 )) &&
-	rc = (£{T})(((rc >> 16) & (£{T})0xFFFF0000FFFF0000L) + (rc & (£{T})0xFFFF0000FFFF0000L));
+	rc = (£{T})(((rc >> 16) & (£{T})0x0000FFFF0000FFFFL) + (rc & (£{T})0x0000FFFF0000FFFFL));
 £>(( $S > 4 )) &&
-	rc = (£{T})(((rc >> 32) & (£{T})0xFFFFFFFF00000000L) + (rc & (£{T})0xFFFFFFFF00000000L));
+	rc = (£{T})(((rc >> 32) & (£{T})0x00000000FFFFFFFFL) + (rc & (£{T})0x00000000FFFFFFFFL));
 	return rc;
     }
     
