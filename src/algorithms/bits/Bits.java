@@ -222,7 +222,8 @@ public class Bits
     {
 £>function _ { echo "ONES_TABLE_256[(int)((value >> $1) & 255)]" ; }
         return (byte)((byte)(£(_ 0) + £(_ 8)) + (byte)(£(_ 16) + £(_ 24)));
-	/* In C you can split the value by getting the address of the value and cast the pointer to char* */
+	/* In C you can split the value by getting the address of the
+	   value and cast the pointer to char*, that is however slower. */
     }
     
     /**
