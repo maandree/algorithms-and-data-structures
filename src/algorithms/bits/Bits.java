@@ -290,6 +290,9 @@ public class Bits
     /**
      * Calculate the number of set bits in an integer, optimised parallel version
      * 
+     * Note tha this algorithm is optimised in the number of high-level operations
+     * and may be a bit slow than the non-optmised version.
+     * 
      * @param   value  The integer
      * @return         The number of set bits
      */
