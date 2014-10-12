@@ -21,7 +21,7 @@ import java.math.*;
 
 
 /**
- * Multiinterpolation search class.This algorithm is exactly to
+ * Multiinterpolation search class. This algorithm is exactly to
  * interpolation search as multibinary search is to binary search.
  * 
  * This algorithm was devised by Mattias Andrée in January of 2014.
