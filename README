@@ -1,2 +1,9 @@
 A collection of algorithms and data structures
 
+
+Does anyone have a name from prior art for either
+of the algorithms implemented in:
+  src/algorithms/searching/MultibinarySearch.java
+  src/algorithms/searching/MultiinterpolationSearch.java,
+or did I perhaps invent them?
+
