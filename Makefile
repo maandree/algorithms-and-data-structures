@@ -23,6 +23,7 @@ obj/%.java: src/%.java $(foreach F, $(PP), src/$(F))
 $(OBJ_LINKED_LISTS): src/datastructures/linkedlists/template obj/algorithms/bits/Powers.class
 obj/algorithms/searching/MultiinterpolationSearch.class: obj/algorithms/searching/InterpolationSearch.class
 obj/algorithms/searching/MultibinarySearch.class: obj/algorithms/searching/BinarySearch.class
+obj/datastructures/PerformanceTest.class: $(OBJ_LINKED_LISTS)
 
 
 .PHONY: clean
