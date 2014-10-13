@@ -1,0 +1,40 @@
+# -*- shell-script -*-
+# Copyright © 2014  Mattias Andrée (maandree@member.fsf.org)
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+fun_name="$(fun | head -n 1 | cut -d \( -f 1 | cut -d \  -f 2 | sed -e 's/^algo_\(.*\)__.*$/\1/')"
+
+macroise ()
+{
+    sed -e 's/$/\\/' | sed -e ':a;N;$!ba;s/\(.*\)\\$/\1/'
+}
+remove_empty_gpp_lines()
+{
+    sed -e '/^\x1b[0-9]*\x1b$/d'
+}
+
+cat << EOF | macroise
+#define algo_${fun_name}(T)
+algo_${fun_name}__##T
+EOF
+
+(cat << EOF ; fun) | macroise
+#define algo_make_implementation_of_${fun_name}(T)
+EOF
+
+(cat << EOF ; fun) | sed -e ':a;N;$!ba;s/^\([^{]*\).*$/\1/' | remove_empty_gpp_lines | macroise
+#define algo_make_prototype_of_${fun_name}(T)
+EOF
+
